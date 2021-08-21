@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { dbConnetion } = require('./database/config');
+const { dbConnetion, dbConnetionNew } = require('./database/config');
 
 
 class Server {
@@ -23,7 +23,7 @@ class Server {
 
     async conectarDB() {
         try {
-            await dbConnetion.authenticate();
+            await dbConnetionNew.authenticate();
             console.log('Database online');
         } catch (error) {
             throw new Error( error );
