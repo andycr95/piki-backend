@@ -1,28 +1,34 @@
 const { DataTypes } = require("sequelize");
 const { dbConnetion } = require('../database/config');
 
-const User = dbConnetion.define('Users', {
-    name: {
+const User = dbConnetion.define('usuarios', {
+    nombre: {
        type: DataTypes.STRING
     },
-    surname: {
+    login: {
        type: DataTypes.STRING
     },
-    phone: {
+    clave: {
        type: DataTypes.STRING
     },
-    email: {
+    telefono: {
        type: DataTypes.STRING
     },
-    pass: {
+    correo: {
        type: DataTypes.STRING
     },
-    status: {
+    empresa: {
+      type: DataTypes.STRING
+   },
+   tipo: {
+      type: DataTypes.INTEGER
+   },
+    creador: {
         type: DataTypes.BOOLEAN
-    },
-    pass: {
-       type: DataTypes.STRING
     }
+   /*  pass: {
+       type: DataTypes.STRING
+    } */
 
 });
 

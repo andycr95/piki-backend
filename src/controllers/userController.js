@@ -1,11 +1,11 @@
 const { response, request } = require('express');
-const Users = require('../models/userModel')
+const User = require('../models/userModel')
 const userCtrl = {};
 
 
  userCtrl.getUser = async (req, res ) => {
 
-  const users = await users.findAll();
+  const users = await User.findAll();
 
     res.json(users);
 }
