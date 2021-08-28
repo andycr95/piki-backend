@@ -31,12 +31,17 @@ const User = dbConnetionNew.define('User', {
     telefono: {
         type: DataTypes.STRING
      },
+     estado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+      
+   }
 
 },
 {
    dbConnetionNew,
    modelName: 'User',
-   tableName: 'usuario'
+   tableName: 'usuarios'
 });
 
 
