@@ -31,7 +31,7 @@ const User = dbConnetionNew.define('User', {
     telefono: {
         type: DataTypes.STRING
      },
-     estado: {
+     status: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
       
