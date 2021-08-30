@@ -1,30 +1,26 @@
 const { DataTypes } = require("sequelize");
 const { dbConnetionNew } = require('../database/config');
 
-const User = dbConnetionNew.define('Users', {
-    name: {
+const Driver = dbConnetionNew.define('conductores', {
+    identificacion: {
        type: DataTypes.STRING
     },
-    surname: {
+    nombre: {
        type: DataTypes.STRING
     },
-    phone: {
+    telefono: {
        type: DataTypes.STRING
     },
-    email: {
+    placa_vehiculo: {
        type: DataTypes.STRING
     },
-    pass: {
+    correo: {
        type: DataTypes.STRING
     },
     status: {
         type: DataTypes.BOOLEAN
-    },
-    pass: {
-       type: DataTypes.STRING
     }
-
 });
 
 
-module.exports = User;
+module.exports = Driver;
