@@ -20,6 +20,9 @@ const Shift = dbConnetionNew.define('turnos', {
     id_clase: {
        type: DataTypes.INTEGER
     },
+    id_patio: {
+       type: DataTypes.INTEGER
+    },
     precio: {
        type: DataTypes.INTEGER
     },
@@ -28,6 +31,9 @@ const Shift = dbConnetionNew.define('turnos', {
     },
     turno_global: {
        type: DataTypes.INTEGER
+    },
+    observaciones: {
+       type: DataTypes.STRING
     },
     status: {
         type: DataTypes.BOOLEAN
