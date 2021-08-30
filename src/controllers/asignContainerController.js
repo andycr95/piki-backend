@@ -13,10 +13,10 @@ asignContainer.get = async (req, res ) => {
 }
 
 asignContainer.post = async ( req, res ) => {
-    const { container, turno } = req.body;
+    const { container, shift } = req.body;
     const asignContainersPost = await AsignContainer.create({ 
         id_contenedor: container,
-        id_turno: turno, 
+        id_turno: shift, 
         status: 'true'
     });
 
