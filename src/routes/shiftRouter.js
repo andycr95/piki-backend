@@ -5,6 +5,7 @@ const shiftController = require('../controllers/shiftController');
 
 router.post('/', shiftController.post);
 router.get('/', shiftController.get);
+router.get('/:id', shiftController.getShift);
 
 
 

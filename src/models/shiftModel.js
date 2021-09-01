@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { dbConnetionNew } = require('../database/config');
+const { Client } = require("./clientModel");
 
 const Shift = dbConnetionNew.define('turnos', {
     fecha_limite: {

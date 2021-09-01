@@ -8,10 +8,17 @@ const shiftCtrl = {};
 
 
 shiftCtrl.get = async (req, res ) => {
+    const shifts = await Shift.findAll();
+    res.json(shifts);
+}
 
-  const users = await users.findAll();
-
-    res.json(users);
+shiftCtrl.getShift = async (req, res ) => {
+    const shift = await Shift.findOne({
+        where: {
+            id: req.params.id,
+        },
+    });
+    res.json(shift);
 }
 
 shiftCtrl.post = async ( req, res ) => {
