@@ -6,7 +6,7 @@ companyCtrl.getCompany = async ( req, res ) => {
         const company = await Company.findAll({ where:{ status:true }});
         return res.status(200).json({ company });
     } catch (error) {
-        return  res.json({message: error.message});
+        return  res.json({ data: company, message: error.message});
     } 
 }
 
@@ -26,7 +26,7 @@ companyCtrl.updateCompany = async ( req, res ) => {
         const { id } = req.params;
         const { nombre } = req.body; 
         const company = await Company.findByPk( id );
-        if( !company ) return res.status( 400 ).json( { message: `La empresa no esta registrada` });
+        if( !company ) return res.status( 400 ).json({ message: `La empresa no esta registrada` });
         await company.update( req.body ).then(() => {
          return res.status( 200 ).json({ message: 'Actualizacion exitosa' });
         });

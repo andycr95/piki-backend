@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const  { dbConnetionNew }  = require('./database/config');
-
+const { dbConnetion, dbConnetionNew } = require('./database/config');
 
 
 class Server {
@@ -24,15 +23,13 @@ class Server {
 
     async conectarDB() {
         try {
-            await dbConnetionNew.sync({ force: false }).then(() => {
-                console.log('Database online');
-            });
-           
+            await dbConnetionNew.authenticate({ force: true });
+            console.log('Database online');
         } catch (error) {
             throw new Error( error );
         }
      
-    }  
+    } 
 
     middlewares() {
 
@@ -49,14 +46,7 @@ class Server {
 
     routes() {
         this.app.use( this.indexPath, require('./routes/indexRouter'));
-        this.app.use("/conductores", require('./routes/driverRouter'));
-        this.app.use("/lineas", require('./routes/lineRouter'));
-        this.app.use("/tipos", require('./routes/typeRouter'));
-        this.app.use("/clientes", require('./routes/clientRouter'));
-        this.app.use("/patios", require('./routes/yardRouter'));
-        this.app.use("/contenedores", require('./routes/containerRouter'));
-        this.app.use("/turnos", require('./routes/shiftRouter'));
-        this.app.use("/asignar_contenedores", require('./routes/asignContainerRouter'));
+        
     }
 
     listen() {
