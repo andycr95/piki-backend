@@ -27,7 +27,6 @@ clientCtrl.searchclient = async (req, res ) => {
     res.json(clients);
 }
 
-
 clientCtrl.post = async ( req, res ) => {
     const { name,phone,place_vehicle,documentId } = req.body;
     const ClientCreate = await Client.create({ 
