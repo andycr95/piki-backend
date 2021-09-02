@@ -1,9 +1,9 @@
 const { response, request } = require('express');
 const moment = require('moment');
 moment.locale('es');
-const Shift = require('../models/shiftModel');
-const Driver = require('../models/driverModel');
-const ClassShift = require('../models/classModel')
+const Shift = require('../models/shitf');
+const Driver = require('../models/driver');
+const ClassShift = require('../models/shiftclass')
 const shiftCtrl = {};
 
 
@@ -17,6 +17,9 @@ shiftCtrl.getShift = async (req, res ) => {
         where: {
             id: req.params.id,
         },
+        include: {
+            model: Driver, as: 'driver'
+        }
     });
     res.json(shift);
 }

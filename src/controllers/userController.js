@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const userCtrl = {};
-const User = require('../models/userModel');
+const User = require('../models/user');
 
 userCtrl.getUser = async ( req, res ) => {
     try {

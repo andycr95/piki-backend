@@ -1,18 +1,18 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const Client = require('../models/clientModel')
+const Client = require('../models/client')
 const clientCtrl = {};
 
 
 clientCtrl.get = async (req, res ) => {
     const clients = await Client.findAll({
         order: [
-            ['nombre', 'ASC']
+            ['name', 'ASC']
         ]
     });
     for (let i = 0; i < clients.length; i++) {
         const c = clients[i];
-        c.nombre = c.nombre.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+        c.name = c.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
     }
     res.json(clients);
 }
@@ -20,7 +20,7 @@ clientCtrl.get = async (req, res ) => {
 clientCtrl.searchclient = async (req, res ) => {
     const clients = await Client.findAll({
         where: {
-            cedula: {
+            nit: {
                 [Op.like]: `%${req.query.documentId}%`
         }
     }});
@@ -28,12 +28,12 @@ clientCtrl.searchclient = async (req, res ) => {
 }
 
 clientCtrl.post = async ( req, res ) => {
-    const { name,phone,place_vehicle,documentId } = req.body;
+    const { name,phone,email,documentId } = req.body;
     const ClientCreate = await Client.create({ 
-        cedula:documentId,
-        nombre:name, 
-        telefono:phone, 
-        placa_vehiculo:place_vehicle, 
+        nit:documentId,
+        name, 
+        phone, 
+        email, 
         status: 'true'
     });
 

@@ -1,11 +1,11 @@
-const AsignContainer = require('../models/asignContainerModel');
+const asignContainerShift = require('../models/asigncontainershift');
 const asignContainer = {};
 
 
 asignContainer.get = async (req, res ) => {
-    const asignContainer = await AsignContainer.findAll({
+    const asignContainer = await asignContainerShift.findAll({
         where: {
-            id_turno: req.params.id,
+            shiftId: req.params.id,
             status: 'true'
         }
     });
@@ -14,9 +14,9 @@ asignContainer.get = async (req, res ) => {
 
 asignContainer.post = async ( req, res ) => {
     const { container, shift } = req.body;
-    const asignContainersPost = await AsignContainer.create({ 
-        id_contenedor: container,
-        id_turno: shift, 
+    const asignContainersPost = await asignContainerShift.create({ 
+        containerId: container,
+        shiftId: shift, 
         status: 'true'
     });
 

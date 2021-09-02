@@ -1,5 +1,5 @@
-const Container = require('../models/containerModel');
-const TypeContainer = require('../models/typeModel');
+const Container = require('../models/container');
+const TypeContainer = require('../models/containertype');
 const containerCtrl = {};
 
 
