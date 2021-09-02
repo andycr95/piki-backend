@@ -1,21 +1,21 @@
-const Yard = require('../models/yardModel')
+const Yard = require('../models/containeryard')
 const yardCtrl = {};
 
 
 yardCtrl.get = async (req, res ) => {
     const yards = await Yard.findAll({
         order: [
-            ['descripcion', 'ASC']
+            ['description', 'ASC']
         ]
     });
     res.json(yards);
 }
 
 yardCtrl.post = async ( req, res ) => {
-    const { descripcion,codigo } = req.body;
+    const { description,code } = req.body;
     const yardCreate = await Yard.create({ 
-        descripcion:descripcion,
-        codigo:codigo
+        description,
+        code
     });
 
     res.json({

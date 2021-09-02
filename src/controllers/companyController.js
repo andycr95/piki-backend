@@ -1,5 +1,5 @@
 const companyCtrl = {};
-const Company = require('../models/companyModels');
+const Company = require('../models/company');
 
 companyCtrl.getCompany = async ( req, res ) => {
     try {
