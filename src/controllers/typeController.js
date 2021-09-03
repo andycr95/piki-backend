@@ -1,8 +1,8 @@
-const TypeContainer = require('../models/containertype')
+const db = require('../models');
 const typeCtrl = {};
 
 typeCtrl.get = async (req, res ) => {
-    const typeContainers = await TypeContainer.findAll({
+    const typeContainers = await db.containerType.findAll({
         order: [
             ['description', 'ASC']
         ]
@@ -10,9 +10,24 @@ typeCtrl.get = async (req, res ) => {
     res.json(typeContainers);
 }
 
+typeCtrl.getWithContainers = async (req, res ) => {
+    const typeContainers = await db.containerType.findAll({
+        order: [
+            ['description', 'ASC']
+        ],
+        include: [
+            {
+                model: db.container,
+                as: 'Instruments'
+            }
+        ]
+    });
+    res.json(typeContainers);
+}
+
 typeCtrl.post = async ( req, res ) => {
     const { description,code } = req.body;
-    const TypeCreate = await TypeContainer.create({ 
+    const TypeCreate = await db.containerType.create({ 
         description,
         code,
         status: 'true',
