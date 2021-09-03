@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      client.hasMany(models.Shitf);
+      client.hasMany(models.shitf);
     }
   };
   client.init({
@@ -27,7 +27,11 @@ module.exports = (sequelize, DataTypes) => {
     phone: {
       type: DataTypes.STRING
     },
-    status: DataTypes.STRING,
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
+
   }, {
     sequelize,
     modelName: 'client',

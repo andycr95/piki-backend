@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      containerYard.hasMany(models.Shitf);
+      containerYard.hasMany(models.shitf);
     }
   };
   containerYard.init({
@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     description: {
        type: DataTypes.STRING
     },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'containerYard',

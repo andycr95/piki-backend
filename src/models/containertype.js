@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     description: {
        type: DataTypes.STRING
     },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'containerType',
