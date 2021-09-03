@@ -27,7 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'NO ACTION',
       onDelete: 'NO ACTION',
     },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'container',
