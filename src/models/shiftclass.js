@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      shiftClass.hasMany(models.shitf);
+      shiftClass.hasMany(models.shift);
     }
   };
   shiftClass.init({

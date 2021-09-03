@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      transLine.hasMany(models.shitf);
+      transLine.hasMany(models.shift);
     }
   };
   transLine.init({

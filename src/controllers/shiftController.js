@@ -1,14 +1,14 @@
 const { response, request } = require('express');
 const moment = require('moment');
 moment.locale('es');
-const Shift = require('../models/shitf');
+const Shift = require('../models/shift');
 const Driver = require('../models/driver');
 const ClassShift = require('../models/shiftclass')
 const shiftCtrl = {};
-
+const db = require('../models');
 
 shiftCtrl.get = async (req, res ) => {
-    const shifts = await Shift.findAll();
+    const shifts = await db.shift.findAll();
     res.json(shifts);
 }
 

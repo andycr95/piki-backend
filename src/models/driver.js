@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      driver.hasMany(models.shitf);
+      driver.hasMany(models.shift);
     }
   };
   driver.init({

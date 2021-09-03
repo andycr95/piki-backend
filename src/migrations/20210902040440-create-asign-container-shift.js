@@ -20,7 +20,7 @@ module.exports = {
       shiftId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'shitfs',
+          model: 'shifts',
           key: 'id'
         },
         onUpdate: 'NO ACTION',

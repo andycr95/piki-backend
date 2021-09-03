@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      client.hasMany(models.shitf);
+      client.hasMany(models.shift);
     }
   };
   client.init({

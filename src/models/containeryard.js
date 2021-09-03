@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      containerYard.hasMany(models.shitf);
+      containerYard.hasMany(models.shift);
     }
   };
   containerYard.init({

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       asignContainerShift.belongsTo(models.container);
-      asignContainerShift.belongsTo(models.shitf);
+      asignContainerShift.belongsTo(models.shift);
     }
   };
   asignContainerShift.init({
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     shiftId: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'shitfs',
+        model: 'shifts',
         key: 'id'
       },
       onUpdate: 'NO ACTION',
