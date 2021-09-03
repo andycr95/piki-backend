@@ -14,8 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       Shitf.belongsTo(models.client);
       Shitf.belongsTo(models.driver);
       Shitf.belongsTo(models.transLine);
-      Shitf.belongsTo(models.classId);
-      Shitf.belongsTo(models.yardId);
     }
   };
   Shitf.init({

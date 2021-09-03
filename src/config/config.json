@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "piki7",
-    "password": "piki72020",
-    "database": "piki7_development",
-    "host": "192.241.155.75",
+    "username": "root",
+    "password": "Junior-1994",
+    "database": "piki7",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "test": {

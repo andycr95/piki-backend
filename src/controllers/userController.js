@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const userCtrl = {};
-const User = require('../models/user');
+const db = require('../models');
 
 userCtrl.getUser = async ( req, res ) => {
     try {
-        const users = await User.findAll();  
+        const users = await db.User.findAll();  
         if( !users ) return res.status( 404 ).json({ message: 'No se encontraron usuarios'});
         res.json(users);
       
