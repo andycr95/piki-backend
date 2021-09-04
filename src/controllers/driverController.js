@@ -1,12 +1,12 @@
 const { response, request } = require('express');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const Driver = require('../models/driver')
+const db = require('../models');
 const driverCtrl = {};
 
 
 driverCtrl.get = async (req, res ) => {
-    const drivers = await Driver.findAll({
+    const drivers = await db.driver.findAll({
         order: [
             ['name', 'ASC']
         ]
@@ -19,7 +19,7 @@ driverCtrl.get = async (req, res ) => {
 }
 
 driverCtrl.search = async (req, res ) => {
-    const drivers = await Driver.findAll({
+    const drivers = await db.driver.findAll({
         where: {
             identification: {
                 [Op.like]: `%${req.query.documentId}%`
@@ -30,7 +30,7 @@ driverCtrl.search = async (req, res ) => {
 
 driverCtrl.post = async ( req, res ) => {
     const { name,phone,type,placa_vehicle,email,documentId } = req.body;
-    const DriverCreate = await Driver.create({ 
+    const DriverCreate = await db.driver.create({ 
         identification:documentId,
         name:name, 
         email,

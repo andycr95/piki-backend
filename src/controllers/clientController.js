@@ -1,11 +1,11 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const Client = require('../models/client')
+const db = require('../models');
 const clientCtrl = {};
 
 
 clientCtrl.get = async (req, res ) => {
-    const clients = await Client.findAll({
+    const clients = await db.client.findAll({
         order: [
             ['name', 'ASC']
         ]
@@ -18,7 +18,7 @@ clientCtrl.get = async (req, res ) => {
 }
 
 clientCtrl.searchclient = async (req, res ) => {
-    const clients = await Client.findAll({
+    const clients = await db.client.findAll({
         where: {
             nit: {
                 [Op.like]: `%${req.query.documentId}%`
@@ -29,7 +29,7 @@ clientCtrl.searchclient = async (req, res ) => {
 
 clientCtrl.post = async ( req, res ) => {
     const { name,phone,email,documentId } = req.body;
-    const ClientCreate = await Client.create({ 
+    const ClientCreate = await db.lient.create({ 
         nit:documentId,
         name, 
         phone, 

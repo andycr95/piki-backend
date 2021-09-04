@@ -1,9 +1,9 @@
-const TransLine = require('../models/transline')
+const db = require('../models');
 const lineCtrl = {};
 
 
 lineCtrl.get = async (req, res ) => {
-    const transLine = await TransLine.findAll({
+    const transLine = await db.transLine.findAll({
         order: [
             ['description', 'ASC']
         ]
@@ -13,7 +13,7 @@ lineCtrl.get = async (req, res ) => {
 
 lineCtrl.post = async ( req, res ) => {
     const { description,code } = req.body;
-    const LineCreate = await TransLine.create({ 
+    const LineCreate = await db.transLine.create({ 
         description,
         code
     });
