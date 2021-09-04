@@ -1,9 +1,6 @@
 const { response, request } = require('express');
 const moment = require('moment');
 moment.locale('es');
-const Shift = require('../models/shift');
-const Driver = require('../models/driver');
-const ClassShift = require('../models/shiftclass')
 const shiftCtrl = {};
 const db = require('../models');
 
@@ -13,7 +10,7 @@ shiftCtrl.get = async (req, res ) => {
 }
 
 shiftCtrl.getShift = async (req, res ) => {
-    const shift = await Shift.findOne({
+    const shift = await db.shift.findOne({
         where: {
             id: req.params.id,
         },
@@ -26,29 +23,29 @@ shiftCtrl.getShift = async (req, res ) => {
 
 shiftCtrl.post = async ( req, res ) => {
     const { document,type,transportLine,clientId,limitTime,patio,observations } = req.body;
-    const classShift = await ClassShift.findOne({
+    const classShift = await db.shiftClass.findOne({
         where:{
            id : type
         }
     });
-    const driver = await Driver.findOne({
+    const driver = await db.driver.findOne({
         where:{
-           identificacion : document
+           identification : document
         }
     });
     const compare = await compareDate();
-    const ShiftCreate = await Shift.create({ 
-        fecha_limite: limitTime,
-        id_cliente: clientId,
-        id_conductor: driver.id,
-        id_linea: transportLine,
-        id_usuario: 1,
-        id_clase: type,
-        id_patio: patio,
-        precio: classShift.precio,
-        consecutivo:  compare.compare ? compare.lastShift.consecutivo+1 : 1,
-        turno_global: compare.lastShift.turno_global+1,
-        observaciones: observations,
+    const ShiftCreate = await db.shift.create({ 
+        limitDate: limitTime,
+        clientId: clientId,
+        driverId: driver.id,
+        lineId: transportLine,
+        userId: 1,
+        classId: type,
+        containerYardId: patio,
+        price: classShift.precio,
+        dayShift:  compare.compare ? compare.lastShift.consecutivo+1 : 1,
+        globalShift: compare.lastShift.turno_global+1,
+        obvs: observations,
         status: 'true'
     });
 
@@ -59,7 +56,7 @@ shiftCtrl.post = async ( req, res ) => {
 }
 
 async function compareDate() {
-    const lastShift = await Shift.findOne({
+    const lastShift = await db.shift.findAll({
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
