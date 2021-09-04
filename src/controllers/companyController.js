@@ -27,11 +27,12 @@ companyCtrl.updateCompany = async ( req, res ) => {
     try {
         const { id } = req.params;
         let newCompany  = req.body; 
+        const user = req.user;
         newCompany.name = newCompany.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
         const foundCompany = await db.company.findByPk( id );
         if( !foundCompany ) return res.status( 400 ).json({ message: `La empresa no esta registrada` });
         await foundCompany.update( newCompany ).then(() => {
-         return res.status( 200 ).json({ message: 'Actualizacion exitosa' });
+         return res.status( 200 ).json({ message: 'Actualizacion exitosa', user });
         });
        
     } catch (error) {

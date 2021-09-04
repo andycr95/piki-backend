@@ -1,13 +1,14 @@
 const { Router } = require('express');
 const router = Router();
 const companyController = require('../controllers/companyController');
+const { validateJWT } = require('../middleware/validate-jwt');
 
 
 
-router.get('/', companyController.getCompany);
-router.post('/', companyController.newCompany);
-router.put('/:id', companyController.updateCompany);
-router.put('/eliminar/:id', companyController.deleteCompany);
+router.get('/', validateJWT, companyController.getCompany);
+router.post('/', validateJWT, companyController.newCompany);
+router.put('/:id', validateJWT, companyController.updateCompany);
+router.put('/eliminar/:id', validateJWT, companyController.deleteCompany);
 
 
 
