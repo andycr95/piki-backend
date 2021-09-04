@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Shitf.belongsTo(models.client);
       Shitf.belongsTo(models.driver);
       Shitf.belongsTo(models.transLine);
+      Shitf.belongsTo(models.containerYard);
     }
   };
   Shitf.init({
@@ -56,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'NO ACTION',
         onDelete: 'NO ACTION',
       },
-      classId: {
+      shiftClassId: {
         type: DataTypes.INTEGER,
         references: {
           model: 'shiftClasses',
@@ -65,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'NO ACTION',
         onDelete: 'NO ACTION',
       },
-      yardId: {
+      containerYardId: {
         type: DataTypes.INTEGER,
         references: {
           model: 'containerYards',
@@ -86,12 +87,13 @@ module.exports = (sequelize, DataTypes) => {
       obvs: {
         type: DataTypes.STRING
       },
-    status: {
-        type: DataTypes.BOOLEAN
-    }
-  }, {
+      status: {
+          type: DataTypes.BOOLEAN
+      }
+    }, {
     sequelize,
     modelName: 'Shitf',
   });
+
   return Shitf;
 };

@@ -15,16 +15,20 @@ module.exports = {
 
     await queryInterface.bulkInsert('shiftClasses', [{
       name: 'carretera',
-      price:  8000
+      price:  8000,
+      status: 'true'
     },{
       name: 'urbanero',
-      price:  8000
+      price:  8000,
+      status: 'true'
     },{
       name: 'exportacion',
-      price:  5000
+      price:  5000,
+      status: 'true'
     },{
       name: 'reposiciones',
-      price:  8000
+      price:  8000,
+      status: 'true'
     },]);
   },
 

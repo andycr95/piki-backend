@@ -54,7 +54,7 @@ module.exports = {
         onUpdate: 'NO ACTION',
         onDelete: 'NO ACTION',
       },
-      yardId: {
+      containerYardId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'containerYards',

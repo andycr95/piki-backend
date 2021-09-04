@@ -12,129 +12,170 @@ module.exports = {
      * }], {});
     */
 
-    await queryInterface.bulkInsert('containerTypes', [{
+    await queryInterface.bulkInsert('containerYards', [{
       code: 'AGUA DULCE',
-      description:  'AGUA DULCE'
+      description:  'AGUA DULCE',
+      status: 'true'
     }, {
       code: 'Cemue',
-      description: 'Cemue'
+      description: 'Cemue',
+      status: 'true'
     }, {
       code: 'Patios Colombia',
-      description: 'Patios Colombia'
+      description: 'Patios Colombia',
+      status: 'true'
     }, {
       code: 'Patios ZAL',
-      description: 'Patios ZAL'
+      description: 'Patios ZAL',
+      status: 'true'
     }, {
       code: 'PCC-G',
-      description: 'PCC - Gerleinco'
+      description: 'PCC - Gerleinco',
+      status: 'true'
     }, {
       code: 'PCC-SIM',
-      description: 'PCC - SIMARITIMA'
+      description: 'PCC - SIMARITIMA',
+      status: 'true'
     }, {
       code: 'PCC-TCS',
-      description: 'PCC - TCBUEN SIM'
+      description: 'PCC - TCBUEN SIM',
+      status: 'true'
     }, {
       code: 'PCC-SPS',
-      description: 'PCC - SPRBUN SIM'
+      description: 'PCC - SPRBUN SIM',
+      status: 'true'
     }, {
       code: 'PCC-PZ',
-      description: 'PCC - PATIOS ZAL'
+      description: 'PCC - PATIOS ZAL',
+      status: 'true'
     }, {
       code: 'SPRBUN',
-      description: 'SPRBUN'
+      description: 'SPRBUN',
+      status: 'true'
     }, {
       code: 'SPRBUN-G',
-      description: 'SPRBUN Gerleinco'
+      description: 'SPRBUN Gerleinco',
+      status: 'true'
     }, {
       code: 'SPRBUNS',
-      description: 'SPRBUN SIMARITIMA'
+      description: 'SPRBUN SIMARITIMA',
+      status: 'true'
     }, {
       code: 'SPRBUNSIM',
-      description: 'SPRBUNSIM - SIMARITIMA'
+      description: 'SPRBUNSIM - SIMARITIMA',
+      status: 'true'
     }, {
       code: 'SPRBUNPZ',
-      description: 'SPRBUN - PATIOS ZAL'
+      description: 'SPRBUN - PATIOS ZAL',
+      status: 'true'
     }, {
       code: 'TCBUEN',
-      description: 'TCBUEN'
+      description: 'TCBUEN',
+      status: 'true'
     }, {
       code: 'TCBUEN',
-      description: 'TCBUEN Gerleinco'
+      description: 'TCBUEN Gerleinco',
+      status: 'true'
     }, {
       code: 'TCBUENSPS',
-      description: 'TCBUEN SIM- SPRBUN SIM'
+      description: 'TCBUEN SIM- SPRBUN SIM',
+      status: 'true'
     }, {
       code: 'TCBUENSIM',
-      description: 'TCBUEN SIM - Simaritima'
+      description: 'TCBUEN SIM - Simaritima',
+      status: 'true'
     }, {
       code: 'TCBUENSM',
-      description: 'TCBUEN Simaritima'
+      description: 'TCBUEN Simaritima',
+      status: 'true'
     }, {
       code: 'TCBUENPCC',
-      description: 'TCBUEN - PCC'
+      description: 'TCBUEN - PCC',
+      status: 'true'
     }, {
       code: 'TCBUENPZ',
-      description: 'TCBUEN - PATIOS ZAL'
+      description: 'TCBUEN - PATIOS ZAL',
+      status: 'true'
     }, {
       code: 'SIMARITIMA',
-      description: 'SIMARITIMA'
+      description: 'SIMARITIMA',
+      status: 'true'
     }, {
       code: 'ZELSA',
-      description: 'ZELSA'
+      description: 'ZELSA',
+      status: 'true'
     }, {
       code: 'PINTERMODAL',
-      description: 'PATIO INTERMODAL'
+      description: 'PATIO INTERMODAL',
+      status: 'true'
     }, {
       code: 'ZONA FRANCA',
-      description: 'ZONA FRANCA'
+      description: 'ZONA FRANCA',
+      status: 'true'
     }, {
       code: 'ZFspr',
-      description: 'ZONA FRANCA SPRBUN'
+      description: 'ZONA FRANCA SPRBUN',
+      status: 'true'
     }, {
       code: 'ZFtcb',
-      description: 'ZONA FRANCA TCBUEN'
+      description: 'ZONA FRANCA TCBUEN',
+      status: 'true'
     }, {
       code: 'ZFpcc',
-      description: 'ZONA FRANCA PCC'
+      description: 'ZONA FRANCA PCC',
+      status: 'true'
     }, {
       code: 'ZFsim',
-      description: 'ZONA FRANCA SIMARITIMA'
+      description: 'ZONA FRANCA SIMARITIMA',
+      status: 'true'
     }, {
       code: 'ZFim',
-      description: 'ZONA FRANCA INTERMODAL'
+      description: 'ZONA FRANCA INTERMODAL',
+      status: 'true'
     }, {
       code: 'Colfpcc',
-      description: 'COLFERCAR - PCC'
+      description: 'COLFERCAR - PCC',
+      status: 'true'
     }, {
       code: 'Colfsim',
-      description: 'COLFERCAR - SIMARITIMA'
+      description: 'COLFERCAR - SIMARITIMA',
+      status: 'true'
     }, {
       code: 'Colfspr',
-      description: 'COLFERCAR - SPR'
+      description: 'COLFERCAR - SPR',
+      status: 'true'
     }, {
       code: 'Colftd',
-      description: 'COLFERCAR - TRANSDEPORT'
+      description: 'COLFERCAR - TRANSDEPORT',
+      status: 'true'
     }, {
       code: 'Transdepot',
-      description: 'TRANSDEPOT'
+      description: 'TRANSDEPOT',
+      status: 'true'
     }, {
       code: 'Transdcol',
-      description: 'TRANSDEPORT - COLFECAR'
+      description: 'TRANSDEPORT - COLFECAR',
+      status: 'true'
     }, {
       code: 'Transdsim',
-      description: 'TRANSDEPORT - SIMARITIMA'
+      description: 'TRANSDEPORT - SIMARITIMA',
+      status: 'true'
     }, {
       code: 'Transdtcb',
-      description: 'TRANSDEPORT - TCBUEN'
+      description: 'TRANSDEPORT - TCBUEN',
+      status: 'true'
     }, {
       code: 'Transdspr',
-      description: 'TRANSDEPORT - SPR'
+      description: 'TRANSDEPORT - SPR',
+      status: 'true'
     }, {
       code: 'Transdpcc',
-      description: 'TRANSDEPORT - PCC'
+      description: 'TRANSDEPORT - PCC',
+      status: 'true'
     }, {
       code: 'ZFtd',
-      description: 'ZONA FRANCA TRANSDEPOT'
+      description: 'ZONA FRANCA TRANSDEPOT',
+      status: 'true'
     }]);
   },
 
