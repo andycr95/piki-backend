@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.belongsTo(models.Company);
+      User.belongsTo(models.company);
     }
   };
   User.init({
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     companyId: {
        type: DataTypes.INTEGER,
         references: {
-          model: 'Companies',
+          model: 'companies',
           key: 'id'
         },
         onUpdate: 'NO ACTION',
@@ -45,10 +45,14 @@ module.exports = (sequelize, DataTypes) => {
     phone: {
         type: DataTypes.STRING
      },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
+    
   }, {
     sequelize,
-    modelName: 'User',
+    modelName: 'user',
   });
   return User;
 };

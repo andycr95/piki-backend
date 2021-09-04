@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      shiftClass.hasMany(models.Shitf);
+      shiftClass.hasMany(models.shift);
     }
   };
   shiftClass.init({
@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     price: {
        type: DataTypes.STRING
     },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'shiftClass',

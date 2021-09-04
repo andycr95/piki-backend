@@ -20,14 +20,15 @@ module.exports = {
       shiftId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Shitfs',
+          model: 'shifts',
           key: 'id'
         },
         onUpdate: 'NO ACTION',
         onDelete: 'NO ACTION',
       },
       status: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,

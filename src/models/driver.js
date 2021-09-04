@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      driver.hasMany(models.Shitf);
+      driver.hasMany(models.shift);
     }
   };
   driver.init({
@@ -33,7 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     email: {
        type: DataTypes.STRING
     },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'driver',

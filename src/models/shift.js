@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Shitf extends Model {
+  class Shift extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,13 +11,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+<<<<<<< HEAD:src/models/shitf.js
       Shitf.belongsTo(models.client);
       Shitf.belongsTo(models.driver);
       Shitf.belongsTo(models.transLine);
       Shitf.belongsTo(models.containerYard);
+=======
+      Shift.belongsTo(models.client);
+      Shift.belongsTo(models.driver);
+      Shift.belongsTo(models.transLine);
+      Shift.belongsTo(models.shiftClass);
+      Shift.belongsTo(models.containerYard);  
+>>>>>>> dev:src/models/shift.js
     }
   };
-  Shitf.init({
+  Shift.init({
       limitDate: {
          type: DataTypes.DATEONLY
       },
@@ -39,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'NO ACTION',
         onDelete: 'NO ACTION',
       },
-      lineId: {
+      transLineId: {
         type: DataTypes.INTEGER,
         references: {
           model: 'transLines',
@@ -51,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         },
         onUpdate: 'NO ACTION',
@@ -88,12 +96,23 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
       },
       status: {
+<<<<<<< HEAD:src/models/shitf.js
           type: DataTypes.BOOLEAN
       }
     }, {
+=======
+        type: DataTypes.STRING,
+        defaultValue: true
+      }
+  }, {
+>>>>>>> dev:src/models/shift.js
     sequelize,
-    modelName: 'Shitf',
+    modelName: 'shift',
   });
+<<<<<<< HEAD:src/models/shitf.js
 
   return Shitf;
+=======
+  return Shift;
+>>>>>>> dev:src/models/shift.js
 };

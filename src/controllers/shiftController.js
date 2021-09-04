@@ -1,9 +1,8 @@
 const { response, request } = require('express');
 const moment = require('moment');
 moment.locale('es');
-const db = require('../models');
 const shiftCtrl = {};
-
+const db = require('../models');
 
 shiftCtrl.get = async (req, res ) => {
     const shifts = await db.Shitf.findAll();

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      transLine.hasMany(models.Shitf);
+      transLine.hasMany(models.shift);
     }
   };
   transLine.init({
@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     description: {
        type: DataTypes.STRING
     },
-    status: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'transLine',

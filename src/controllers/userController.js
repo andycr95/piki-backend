@@ -4,7 +4,7 @@ const db = require('../models');
 
 userCtrl.getUser = async ( req, res ) => {
     try {
-        const users = await db.User.findAll();  
+        const users = await db.user.findAll({ status: true});  
         if( !users ) return res.status( 404 ).json({ message: 'No se encontraron usuarios'});
         res.json(users);
       
@@ -14,18 +14,17 @@ userCtrl.getUser = async ( req, res ) => {
 }
 
 userCtrl.newUser = async ( req, res ) => {
-    const { nombre, login,  clave, ident, telefono, correo, empresa, tipo, creador } = req.body;
+    const newUser = req.body;
     try {
-        const findEmail = await User.findOne({ where: { correo: correo} });
-        console.log(correo);
-        if( findEmail ) return res.status( 400 ).json( { message: `El correo ${ correo } ya esta en uso`  });
-        const findIdent = await User.findOne({ where: { ident: ident} });
-        console.log(findIdent);
-        if( findIdent ) return res.status( 400 ).json( { message: `La cedula  ${ ident } ya esta en uso`  });
+        const findEmail = await db.user.findOne({ where: { email: newUser.email} });
+       
+        if( findEmail ) return res.status( 400 ).json( { message: `El correo ${ newUser.email } ya esta en uso`  });
+        const findIdent = await db.user.findOne({ where: { identification: newUser.identification} });
+        if( findIdent ) return res.status( 400 ).json( { message: `La cedula  ${ newUser.identification } ya esta en uso`  });
         const salt = bcrypt.genSaltSync();
-        req.body.clave = bcrypt.hashSync( req.body.clave, salt );
-        const newUser = await User.create(req.body).then(() => {
-            return res.status( 200 ).json({ message: true });
+        newUser.password = bcrypt.hashSync( newUser.password, salt );
+        await db.user.create( newUser ).then(() => {
+        return res.status( 200 ).json({ user: newUser, message: true });
         });
         
     }catch (error) {
@@ -37,10 +36,10 @@ userCtrl.updateUser = async ( req, res ) => {
     const { id } = req.params;
     const { nombre, telefono, tipo } = req.body;
     try {
-        const user = await User.findByPk( id );
-        if( !user ) return res.status( 400 ).json( { message: `El usuario no existe` });
-       await user.update( req.body ).then(() => {
-        return res.status( 200 ).json({ user });
+        const foundUser = await db.user.findByPk( id );
+        if( !foundUser ) return res.status( 400 ).json( { message: `El usuario no existe` });
+       await foundUser.update( req.body ).then(() => {
+        return res.status( 200 ).json({ foundUser });
        });
         
     }catch (error) {
@@ -52,7 +51,7 @@ userCtrl.updateUser = async ( req, res ) => {
     const { id } = req.params;
     const { nombre, telefono, tipo } = req.body;
     try {
-        const user = await User.findByPk( id );
+        const user = await db.User.findByPk( id );
         if( !user ) return res.status( 400 ).json( { message: `El usuario no existe` });
        await user.update( req.body ).then(() => {
         return res.status( 200 ).json({ user, message: 'El usuario a sido actualizado' });
@@ -66,7 +65,7 @@ userCtrl.updateUser = async ( req, res ) => {
 userCtrl.deleteUser = async ( req, res ) => {
     const { id } = req.params;
     try {
-        const user = await User.findByPk( id ).then(() => {
+        const user = await db.User.findByPk( id ).then(() => {
             if( !user ) return res.status( 400 ).json( { message: `El usuario no existe` });
         });
        await user.update({ estado: false }).then(() => {
