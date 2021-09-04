@@ -5,12 +5,12 @@ const shiftCtrl = {};
 const db = require('../models');
 
 shiftCtrl.get = async (req, res ) => {
-    const shifts = await db.Shitf.findAll();
+    const shifts = await db.shift.findAll();
     res.json(shifts);
 }
 
 shiftCtrl.getShift = async (req, res ) => {
-    const shift = await db.Shitf.findOne({
+    const shift = await db.shift.findOne({
         where: {
             id: req.params.id,
         },
@@ -34,7 +34,7 @@ shiftCtrl.post = async ( req, res ) => {
         }
     });
     const compare = await compareDate();
-    const ShiftCreate = await db.Shitf.create({ 
+    const ShiftCreate = await db.shift.create({ 
         limitDate: limitTime,
         clientId: clientId,
         driverId: driver.id,
@@ -56,7 +56,7 @@ shiftCtrl.post = async ( req, res ) => {
 }
 
 async function compareDate() {
-    const lastShift = await db.Shitf.findAll({
+    const lastShift = await db.shift.findAll({
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
