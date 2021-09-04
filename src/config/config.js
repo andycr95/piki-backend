@@ -1,10 +1,11 @@
-{
+module.exports = {
   "development": {
-    "username": "piki7",
-    "password": "piki72020",
-    "database": "piki7_development",
-    "host": "192.241.155.75",
-    "dialect": "mysql"
+    "username": `${process.env.USERNAME_DEV}`,
+    "password": `${process.env.PASSWORD_DEV}`,
+    "database": `${process.env.DATABASE_DEV}`,
+    "host": process.env.HOST,
+    "dialect": process.env.DIALECT,
+    "logging": false
   },
   "test": {
     "username": "piki7",
