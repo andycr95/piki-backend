@@ -1,11 +1,10 @@
-const { response, request } = require('express');
-const moment = require('moment');
-moment.locale('es');
-const Shift = require('../models/shift');
+const moment = require('moment').locale('es');
+const db = require('../models');
+const sequelize = require("sequelize");
 const Driver = require('../models/driver');
 const ClassShift = require('../models/shiftclass')
+const { Op } = require("sequelize");
 const shiftCtrl = {};
-const db = require('../models');
 
 shiftCtrl.get = async (req, res ) => {
     const shifts = await db.shift.findAll();
@@ -13,7 +12,7 @@ shiftCtrl.get = async (req, res ) => {
 }
 
 shiftCtrl.getShift = async (req, res ) => {
-    const shift = await Shift.findOne({
+    const shift = await db.shift.findOne({
         where: {
             id: req.params.id,
         },
@@ -37,7 +36,7 @@ shiftCtrl.post = async ( req, res ) => {
         }
     });
     const compare = await compareDate();
-    const ShiftCreate = await Shift.create({ 
+    const ShiftCreate = await db.shift.create({ 
         fecha_limite: limitTime,
         id_cliente: clientId,
         id_conductor: driver.id,
@@ -59,7 +58,7 @@ shiftCtrl.post = async ( req, res ) => {
 }
 
 async function compareDate() {
-    const lastShift = await Shift.findOne({
+    const lastShift = await db.shift.findOne({
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
@@ -72,5 +71,46 @@ async function compareDate() {
         lastShift
     };
 }
+
+shiftCtrl.getDataFilter = async ( req, res ) => {
+    try {
+        const patios = await db.containerYard.findAll({
+            attributes: [['id', 'item_id'], ['description', 'item_text']],
+            order: [
+                ['description', 'ASC']
+            ]
+        })
+
+        const tiposTamanios = await db.containerType.findAll({
+            attributes: ['id', 'description'],
+            order: [
+                ['description', 'ASC']
+            ]
+        })
+
+    } catch (error) {
+        res.json({ error: error})                
+    }
+}
+
+shiftCtrl.getFilter = async ( req, res ) => {
+    const { campos, fechaIni, fechaFin } = req.body;
+    const query = {
+        order: [
+            ['id', 'ASC']
+        ],
+        attributes: ['dayShift', 'globalShift'],       
+    }
+    const turnos = await db.shift.findAll(query)
+
+    res.json(turnos)
+}
+
+/* where: {
+    createdAt: {
+        [Op.gte]: moment(fechaIni).format('YYYY-MM-DD'),
+        [Op.lte]: moment(fechaFin)
+    }
+} */
 
 module.exports = shiftCtrl;
