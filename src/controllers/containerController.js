@@ -1,24 +1,23 @@
-const Container = require('../models/container');
-const TypeContainer = require('../models/containertype');
+const db = require('../models');
 const containerCtrl = {};
 
 
 containerCtrl.get = async (req, res ) => {
-    const containers = await Container.find();
+    const containers = await db.container.find();
     res.json(containers);
 }
 
 containerCtrl.post = async ( req, res ) => {
-    const { container, containerType } = req.body;
-    const type = await TypeContainer.findOne({
+    const { container, typeCode } = req.body;
+    const type = await db.containerType.findOne({
         where: {
-            codigo: containerType,
+            code: typeCode,
             status: 'true'
         }
     });
-    const ContainerCreate = await Container.create({ 
-        codigo:container,
-        id_tipo:type.id, 
+    const ContainerCreate = await db.container.create({ 
+        code:container,
+        typeId:type.id, 
         status: 'true'
     });
 
