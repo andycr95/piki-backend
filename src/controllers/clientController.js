@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const db = require('../models');
 const clientCtrl = {};
-const db = require('../models');
 
 clientCtrl.get = async (req, res ) => {
     const clients = await db.client.findAll({

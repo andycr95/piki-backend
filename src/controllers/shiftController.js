@@ -2,6 +2,7 @@ const moment = require('moment').locale('es');
 const db = require('../models');
 const Driver = require('../models/driver');
 const { Op } = require("sequelize");
+const { CampoMock } = require('../mocks/campos.mock');
 const shiftCtrl = {};
 
 shiftCtrl.get = async (req, res ) => {
@@ -70,36 +71,25 @@ async function compareDate() {
     };
 }
 
-shiftCtrl.getDataFilter = async ( req, res ) => {
-    try {
-        const patios = await db.containerYard.findAll({
-            attributes: [['id', 'item_id'], ['description', 'item_text']],
-            order: [
-                ['description', 'ASC']
-            ]
-        })
-
-        const tiposTamanios = await db.containerType.findAll({
-            attributes: ['id', 'description'],
-            order: [
-                ['description', 'ASC']
-            ]
-        })
-
-    } catch (error) {
-        res.json({ error: error})                
-    }
-}
-
 shiftCtrl.getFilter = async ( req, res ) => {
-    const { campos, fechaIni, fechaFin } = req.body;
+    const { filter } = req.body;
+    attributes = []
+
+    filter.campos.forEach( ( data ) => {
+        attributes.push(CampoMock[data.item_text])
+    })
+
+    console.log(attributes);
+
+
     const query = {
         order: [
-            ['id', 'ASC']
+            ['limitDate', 'ASC']
         ],
-        attributes: ['dayShift', 'globalShift'],       
+        attributes: attributes,       
     }
     const turnos = await db.shift.findAll(query)
+    console.log('turnos: ', turnos);
 
     res.json(turnos)
 }
