@@ -1,7 +1,8 @@
-const moment = require('moment').locale('es');
+const moment = require('moment')
+moment.locale('es');
 const db = require('../models');
 const Driver = require('../models/driver');
-const { Op } = require("sequelize");
+const { Op, QueryTypes, DatabaseError } = require("sequelize");
 const { CampoMock } = require('../mocks/campos.mock');
 const shiftCtrl = {};
 
@@ -72,26 +73,46 @@ async function compareDate() {
 }
 
 shiftCtrl.getFilter = async ( req, res ) => {
-    const { filter } = req.body;
-    attributes = []
+    try {
+        const { campos, cliente, patio, linea, clase, tipoTamanioContenedor, fechaIni, fechaFin  } = req.body;
+        let attributes = []
+        let filter = []
+        let where = ""
 
-    filter.campos.forEach( ( data ) => {
-        attributes.push(CampoMock[data.item_text])
-    })
+        campos.forEach( ( data ) => {
+            attributes.push(CampoMock[data.item_text])
+        })
 
-    console.log(attributes);
+        if (cliente.length) filter.push(`clients.id=${cliente[0].item_id}`)
+        if (patio.length) filter.push(`containerYards.id=${patio[0].item_id}`)
+        if (linea.length) filter.push(`transLines.id=${linea[0].item_id}`)
+        if (clase.length) filter.push(`shiftClasses.id=${clase[0].item_id}`)
+        if (fechaFin && fechaIni) filter.push(`shifts.createdAt BETWEEN '${moment(fechaIni).format('YYYY-MM-DD HH:mm:ss')}' AND '${ moment(fechaFin).add(24, 'hours').format('YYYY-MM-DD HH:mm:ss') }'`)
 
+        if (filter.length) where = `WHERE ${filter.join(' AND ')}`;
 
-    const query = {
-        order: [
-            ['limitDate', 'ASC']
-        ],
-        attributes: attributes,       
+        const turnos = await db.sequelize.query(`SELECT ${attributes.toString()} FROM shifts JOIN clients ON clients.id = shifts.clientId JOIN drivers ON drivers.id=shifts.driverId JOIN transLines ON transLines.id=shifts.transLineId JOIN containerYards ON containerYards.id=shifts.containerYardId JOIN shiftClasses ON shiftClasses.id=shifts.shiftClassId ${where}`, { type: QueryTypes.SELECT})
+
+        /* const query = {
+            order: [
+                ['limitDate', 'ASC']
+            ],
+            include: [
+                {
+                    model: db.client,
+                    attributes: ['name'],
+                }
+            ],
+            attributes: attributes
+        }
+
+        const turnos = await db.shift.findAll(query)*/
+
+        res.json(turnos)
+    } catch (error) {
+        console.log('error: ', error);
+        
     }
-    const turnos = await db.shift.findAll(query)
-    console.log('turnos: ', turnos);
-
-    res.json(turnos)
 }
 
 /* where: {
