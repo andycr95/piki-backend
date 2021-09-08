@@ -80,7 +80,7 @@ shiftCtrl.getFilter = async ( req, res ) => {
         let where = ""
 
         campos.forEach( ( data ) => {
-            attributes.push(CampoMock[data.item_text])
+            attributes.push(CampoMock[data])
         })
 
         if (cliente.length) filter.push(`clients.id=${cliente[0].item_id}`)
