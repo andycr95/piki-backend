@@ -1,10 +1,21 @@
 const bcrypt = require('bcrypt');
 const userCtrl = {};
 const db = require('../models');
+const { Sequelize } = require('../models');
 
 userCtrl.getUser = async ( req, res ) => {
     try {
-        const users = await db.user.findAll({ status: true});  
+        const users = await db.user.findAll({
+            where: {
+                status: true
+            },
+            include: [
+                {
+                    model: db.company,
+                    where: { id: Sequelize.col('companyId')}
+                }
+            ]
+        });  
         if( !users ) return res.status( 404 ).json({ message: 'No se encontraron usuarios'});
         res.json(users);
       

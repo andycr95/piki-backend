@@ -16,7 +16,7 @@ authCtrl.login = async ( req, res ) => {
         if( !validPassword ) return res.status( 400 ).json({ message: 'Usuario o contraseña incorrecto '});
         const token = await generateJWT( userFound.dataValues.id );
      
-       res.status(200).json({ userFound, token })
+        return res.status(200).send( {token} )
         
     }catch (error) {
         return  res.status( 500 ).send({message: error.message});

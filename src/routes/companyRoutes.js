@@ -5,10 +5,10 @@ const { validateJWT } = require('../middleware/validate-jwt');
 
 
 
-router.get('/', validateJWT, companyController.getCompany);
-router.post('/', validateJWT, companyController.newCompany);
-router.put('/:id', validateJWT, companyController.updateCompany);
-router.put('/eliminar/:id', validateJWT, companyController.deleteCompany);
+router.get('/', companyController.getCompany);
+router.post('/', companyController.newCompany);
+router.put('/:id', companyController.updateCompany);
+router.delete('/eliminar/:id', companyController.deleteCompany);
 
 
 
