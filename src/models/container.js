@@ -11,17 +11,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Container.belongsTo(models.containerType);
+      container.belongsTo(models.containerType);
+      container.belongsTo(models.shift);
     }
   };
   Container.init({
     code: {
        type: DataTypes.STRING
     },
-    typeId: {
+    containerTypeId: {
       type: DataTypes.INTEGER,
       references: {
         model: 'containerTypes',
+        key: 'id'
+      },
+      onUpdate: 'NO ACTION',
+      onDelete: 'NO ACTION',
+    },
+    shiftId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'shifts',
         key: 'id'
       },
       onUpdate: 'NO ACTION',

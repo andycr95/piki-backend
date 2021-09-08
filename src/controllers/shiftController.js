@@ -22,7 +22,8 @@ shiftCtrl.getShift = async (req, res ) => {
 }
 
 shiftCtrl.post = async ( req, res ) => {
-    const { document,type,transportLine,clientId,limitTime,patio,observations } = req.body;
+    const { document,type,transportLine,clientId,limitTime,patio, containers, observations } = req.body;
+    let dateLimit = new Date(limitTime)
     const classShift = await db.shiftClass.findOne({
         where:{
            id : type
@@ -35,23 +36,36 @@ shiftCtrl.post = async ( req, res ) => {
     });
     const compare = await compareDate();
     const ShiftCreate = await db.shift.create({ 
-        limitDate: limitTime,
-        clientId: clientId,
+        limitDate: dateLimit,
+        clientId: parseInt(clientId),
         driverId: driver.id,
-        lineId: transportLine,
+        transLineId: parseInt(transportLine),
         userId: 1,
-        classId: type,
-        containerYardId: patio,
-        price: classShift.precio,
-        dayShift:  compare.compare ? compare.lastShift.consecutivo+1 : 1,
-        globalShift: compare.lastShift.turno_global+1,
+        shiftClassId: parseInt(type),
+        containerYardId: parseInt(patio),
+        price: parseInt(classShift.price),
+        dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
+        globalShift: compare.compare ? compare.shiftL.globalShift+1 : 1,
         obvs: observations,
         status: 'true'
     });
 
+    await createContainer(containers, ShiftCreate.id);
+    const shift = await db.shift.findByPk(ShiftCreate.id, { 
+        include: [
+            {model:"client"}, 
+            {model:"driver"}, 
+            {model:"transLine"}, 
+            {model:"user"}, 
+            {model:"shiftClass"}, 
+            {model:"containerYard"},
+            {model:"containers", include: ["container.containerType"] }
+        ]
+    })
+
     res.json({
         msg: 'post API - lastShift',
-        ShiftCreate
+        shift
     });
 }
 
@@ -60,14 +74,38 @@ async function compareDate() {
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
+
+
+    if (lastShift.length === 0) return false;
+    let shiftL = lastShift[0];
     let now = new Date();
     let date = moment(now).format("YYYY-MM-DD");
-    let dateN = moment(lastShift.createdAt).format("YYYY-MM-DD");
+    let dateN = moment(shiftL.createdAt).format("YYYY-MM-DD");
 
     return {
         compare: date == dateN,
-        lastShift
+        shiftL
     };
+}
+
+
+async function createContainer(containers, id) {
+    for (let i = 0; i < containers.length; i++) {
+        const c = containers[i];
+        const type = await db.containerType.findOne({
+            where: {
+                code: c.typeCode,
+                status: 'true'
+            }
+        });
+        await db.container.create({ 
+            code:c.container,
+            containerTypeId:type.id, 
+            shiftId:id,
+            status: 'true'
+        });
+        
+    }
 }
 
 module.exports = shiftCtrl;
