@@ -8,7 +8,7 @@ containerCtrl.get = async (req, res ) => {
 }
 
 containerCtrl.post = async ( req, res ) => {
-    const { container, typeCode } = req.body;
+    const { container, typeCode, shiftId } = req.body;
     const type = await db.containerType.findOne({
         where: {
             code: typeCode,
@@ -17,7 +17,8 @@ containerCtrl.post = async ( req, res ) => {
     });
     const ContainerCreate = await db.container.create({ 
         code:container,
-        typeId:type.id, 
+        containerTypeId:type.id, 
+        shiftId,
         status: 'true'
     });
 
@@ -27,4 +28,23 @@ containerCtrl.post = async ( req, res ) => {
     });
 }
 
-module.exports = containerCtrl;
+async function createContainer(containers) {
+    for (let i = 0; i < containers.length; i++) {
+        const c = containers[i];
+        const type = await db.containerType.findOne({
+            where: {
+                code: c.typeCode,
+                status: 'true'
+            }
+        });
+        await db.container.create({ 
+            code:c.container,
+            containerTypeId:type.id, 
+            shiftId:c.shiftId,
+            status: 'true'
+        });
+        
+    }
+}
+
+module.exports = { containerCtrl, createContainer };

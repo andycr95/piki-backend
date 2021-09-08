@@ -13,7 +13,6 @@ router.use("/patios", require('./yardRouter'));
 router.use("/contenedores", require('./containerRouter'));
 router.use("/turnos", require('./shiftRouter'));
 router.use("/empresas", require('./companyRoutes'));
-router.use("/asignar_contenedores", require('./asignContainerRouter'));
 
 
 module.exports = router;
