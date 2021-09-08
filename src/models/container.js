@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      container.belongsTo(models.containerType);
-      container.belongsTo(models.shift);
+      Container.belongsTo(models.containerType);
+      Container.belongsTo(models.shift);
     }
   };
   Container.init({
