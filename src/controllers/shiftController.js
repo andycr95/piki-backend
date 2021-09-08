@@ -1,8 +1,10 @@
-const { response, request } = require('express');
-const moment = require('moment');
+const moment = require('moment')
 moment.locale('es');
-const shiftCtrl = {};
 const db = require('../models');
+const Driver = require('../models/driver');
+const { Op, QueryTypes, DatabaseError } = require("sequelize");
+const { CampoMock } = require('../mocks/campos.mock');
+const shiftCtrl = {};
 
 shiftCtrl.get = async (req, res ) => {
     const shifts = await db.shift.findAll();
@@ -103,9 +105,57 @@ async function createContainer(containers, id) {
             containerTypeId:type.id, 
             shiftId:id,
             status: 'true'
-        });
-        
+        });        
     }
 }
+
+shiftCtrl.getFilter = async ( req, res ) => {
+    try {
+        const { campos, cliente, patio, linea, clase, tipoTamanioContenedor, fechaIni, fechaFin  } = req.body;
+        let attributes = []
+        let filter = []
+        let where = ""
+
+        campos.forEach( ( data ) => {
+            attributes.push(CampoMock[data])
+        })
+
+        if (cliente.length) filter.push(`clients.id=${cliente[0].item_id}`)
+        if (patio.length) filter.push(`containerYards.id=${patio[0].item_id}`)
+        if (linea.length) filter.push(`transLines.id=${linea[0].item_id}`)
+        if (clase.length) filter.push(`shiftClasses.id=${clase[0].item_id}`)
+        if (fechaFin && fechaIni) filter.push(`shifts.createdAt BETWEEN '${moment(fechaIni).format('YYYY-MM-DD HH:mm:ss')}' AND '${ moment(fechaFin).add(24, 'hours').format('YYYY-MM-DD HH:mm:ss') }'`)
+
+        if (filter.length) where = `WHERE ${filter.join(' AND ')}`;
+
+        const turnos = await db.sequelize.query(`SELECT ${attributes.toString()} FROM shifts JOIN clients ON clients.id = shifts.clientId JOIN drivers ON drivers.id=shifts.driverId JOIN transLines ON transLines.id=shifts.transLineId JOIN containerYards ON containerYards.id=shifts.containerYardId JOIN shiftClasses ON shiftClasses.id=shifts.shiftClassId ${where}`, { type: QueryTypes.SELECT})
+
+        /* const query = {
+            order: [
+                ['limitDate', 'ASC']
+            ],
+            include: [
+                {
+                    model: db.client,
+                    attributes: ['name'],
+                }
+            ],
+            attributes: attributes
+        }
+
+        const turnos = await db.shift.findAll(query)*/
+
+        res.json(turnos)
+    } catch (error) {
+        console.log('error: ', error);
+    }
+}
+
+/* where: {
+    createdAt: {
+        [Op.gte]: moment(fechaIni).format('YYYY-MM-DD'),
+        [Op.lte]: moment(fechaFin)
+    }
+} */
 
 module.exports = shiftCtrl;

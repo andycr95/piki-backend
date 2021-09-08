@@ -24,4 +24,18 @@ yardCtrl.post = async ( req, res ) => {
     });
 }
 
+yardCtrl.getAllReport = async (req, res) => {
+    try {
+        const patios = await db.containerYard.findAll({
+            attributes: [['id', 'item_id'], ['description', 'item_text']],
+            order: [
+                ['description', 'ASC']
+            ]
+        })
+        res.status(200).json(patios)
+    } catch (error) {
+        res.json({ error: error})
+    }
+}
+
 module.exports = yardCtrl;

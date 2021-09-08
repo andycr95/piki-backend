@@ -3,7 +3,6 @@ const Op = Sequelize.Op;
 const db = require('../models');
 const clientCtrl = {};
 
-
 clientCtrl.get = async (req, res ) => {
     const clients = await db.client.findAll({
         order: [
@@ -41,6 +40,20 @@ clientCtrl.post = async ( req, res ) => {
         msg: 'post API - clientsPost',
         ClientCreate
     });
+}
+
+clientCtrl.getAllReport = async (req, res) => {
+    try {
+        const clientes = await db.client.findAll({
+            attributes: [['id', 'item_id'], ['name', 'item_text']],
+            order: [
+                ['name', 'ASC']
+            ]
+        })
+        res.status(200).json(clientes)
+    } catch (error) {
+        res.json({ error: error})
+    }
 }
 
 module.exports = clientCtrl;
