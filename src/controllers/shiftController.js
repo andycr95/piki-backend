@@ -16,9 +16,17 @@ shiftCtrl.getShift = async (req, res ) => {
         where: {
             id: req.params.id,
         },
-        include: {
-            model: Driver, as: 'driver'
-        }
+        include: [
+            {model: db.client, as: 'client' }, 
+            {model: db.transLine, as: 'transLine' },
+            {model: db.user, as: 'user' },
+            {model: db.shiftClass, as: 'shiftClass' },
+            {model: db.containerYard, as: 'containerYard' },
+            {model: db.container, as: 'containers', include:{
+                model: db.containerType, as: 'containerType' 
+            } },
+           { model: db.driver, as: 'driver'}
+        ]
     });
     res.json(shift);
 }
@@ -53,17 +61,22 @@ shiftCtrl.post = async ( req, res ) => {
     });
 
     await createContainer(containers, ShiftCreate.id);
-    const shift = await db.shift.findByPk(ShiftCreate.id, { 
+    const shift = await db.shift.findOne({
+        where: {
+            id: ShiftCreate.id,
+        },
         include: [
-            {model:"client"}, 
-            {model:"driver"}, 
-            {model:"transLine"}, 
-            {model:"user"}, 
-            {model:"shiftClass"}, 
-            {model:"containerYard"},
-            {model:"containers", include: ["container.containerType"] }
+            {model: db.client, as: 'client' }, 
+            {model: db.transLine, as: 'transLine' },
+            {model: db.user, as: 'user' },
+            {model: db.shiftClass, as: 'shiftClass' },
+            {model: db.containerYard, as: 'containerYard' },
+            {model: db.container, as: 'containers', include:{
+                model: db.containerType, as: 'containerType' 
+            } },
+           { model: db.driver, as: 'driver'}
         ]
-    })
+    });
 
     res.json({
         msg: 'post API - lastShift',
