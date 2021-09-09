@@ -14,7 +14,6 @@ companyCtrl.newCompany = async ( req, res ) => {
     try {
         let newCompany  = req.body; 
         newCompany.name = newCompany.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
-        console.log(newCompany.name);
         db.company.create( newCompany );
         return res.status( 200 ).json({ message: 'Registro exitoso'}); 
         
