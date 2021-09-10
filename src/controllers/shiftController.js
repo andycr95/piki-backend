@@ -3,8 +3,9 @@ moment.locale('es');
 const db = require('../models');
 const Driver = require('../models/driver');
 const { Op, QueryTypes, DatabaseError } = require("sequelize");
-const { CampoMock } = require('../mocks/campos.mock');
+const { CamposMock, CamposWhereMock } = require('../mocks/campos.mock');
 const shiftCtrl = {};
+
 
 shiftCtrl.get = async (req, res ) => {
     const shifts = await db.shift.findAll();
@@ -111,51 +112,88 @@ async function createContainer(containers, id) {
 
 shiftCtrl.getFilter = async ( req, res ) => {
     try {
-        const { campos, cliente, patio, linea, clase, tipoTamanioContenedor, fechaIni, fechaFin  } = req.body;
-        let attributes = []
-        let filter = []
-        let where = ""
+        const { campos, fechaIni, fechaFin } = req.body;
+        delete req.body.titulo
+        delete req.body.campos
+        delete req.body.fechaIni
+        delete req.body.fechaFin
+        let attributes = {};
+        attributes['shifts'] = ['createdAt', 'price'];
+        attributes['containers'] = ['id']
+        let filter = {}
 
-        campos.forEach( ( data ) => {
-            attributes.push(CampoMock[data])
-        })
+        for (const campo of campos) {
+            const datos = CamposMock[campo];
+            if (datos) {
+                for (const value of datos) {
+                    if (!attributes[value['table']]) attributes[value['table']] = []
+                    attributes[value['table']].push(value['field'])
+                }
+            }
+        }
 
-        if (cliente.length) filter.push(`clients.id=${cliente[0].item_id}`)
-        if (patio.length) filter.push(`containerYards.id=${patio[0].item_id}`)
-        if (linea.length) filter.push(`transLines.id=${linea[0].item_id}`)
-        if (clase.length) filter.push(`shiftClasses.id=${clase[0].item_id}`)
-        if (fechaFin && fechaIni) filter.push(`shifts.createdAt BETWEEN '${moment(fechaIni).format('YYYY-MM-DD HH:mm:ss')}' AND '${ moment(fechaFin).add(24, 'hours').format('YYYY-MM-DD HH:mm:ss') }'`)
+        for (const key in req.body) {
+            if (req.body[key] && req.body[key].length) {
+                const campo = CamposWhereMock[key]
+                if (!filter[campo['table']]) filter[campo['table']] = {}
+                filter[campo['table']][campo['field']] = req.body[key][0].item_id                
+            }
+        }
 
-        if (filter.length) where = `WHERE ${filter.join(' AND ')}`;
+        if (fechaIni) {
+            if (!filter['shifts']) filter['shifts'] = {};
+            filter['shifts']['createdAt'] = {
+                [Op.gte]: moment(fechaIni).format('YYYY-MM-DD HH:mm:ss'),
+                [Op.lte]: moment( (fechaFin) ? fechaFin : fechaIni).add(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
+            }
+        } 
 
-        const turnos = await db.sequelize.query(`SELECT ${attributes.toString()} FROM shifts JOIN clients ON clients.id = shifts.clientId JOIN drivers ON drivers.id=shifts.driverId JOIN transLines ON transLines.id=shifts.transLineId JOIN containerYards ON containerYards.id=shifts.containerYardId JOIN shiftClasses ON shiftClasses.id=shifts.shiftClassId ${where}`, { type: QueryTypes.SELECT})
-
-        /* const query = {
+        const query = {
             order: [
-                ['limitDate', 'ASC']
+                ['createdAt', 'DESC']
             ],
             include: [
                 {
                     model: db.client,
-                    attributes: ['name'],
+                    attributes: (attributes['clients'] ) ? attributes['clients'] : []
+                },
+                {
+                    model: db.container,
+                    attributes: attributes['containers'],
+                    where: filter['containers'],
+                    include: {
+                        model: db.containerType,
+                        attributes: (attributes['containerTypes'] ) ? attributes['containerTypes'] : [],
+                    }
+                },
+                {
+                    model: db.driver,
+                    attributes: (attributes['drivers'] ) ? attributes['drivers'] : [],
+                },
+                {
+                    model: db.transLine,
+                    attributes: (attributes['transLines'] ) ? attributes['transLines'] : [],
+                },
+                {
+                    model: db.containerYard,
+                    attributes: (attributes['containerYards'] ) ? attributes['containerYards'] : [],
+                },
+                {
+                    model: db.shiftClass,
+                    attributes: ['id', 'name' ]
                 }
+
             ],
-            attributes: attributes
+            attributes: attributes['shifts'],
+            where: filter['shifts']
         }
 
-        const turnos = await db.shift.findAll(query)*/
+        const turnos = await db.shift.findAll(query)
 
-        res.json(turnos)
+        res.status(200).json(turnos)
     } catch (error) {
-        console.log('error: ', error);
+        res.status(404).json(error)
     }
 }
-
-/* where: {
-    createdAt: {
-        [Op.gte]: moment(fechaIni).format('YYYY-MM-DD'),
-        [Op.lte]: moment(fechaFin)
-    }
-} */
 
 module.exports = shiftCtrl;
