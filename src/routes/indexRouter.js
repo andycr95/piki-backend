@@ -13,6 +13,7 @@ router.use("/contenedores", require('./containerRouter'));
 router.use("/turnos", require('./shiftRouter'));
 router.use("/clases-turnos", require('./shiftClassRouter'));
 router.use("/empresas", require('./companyRoutes'));
+router.use("/management", require('./managementRouter'));
 
 
 module.exports = router;
