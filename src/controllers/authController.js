@@ -8,9 +8,9 @@ const db = require('../models');
 authCtrl.login = async ( req, res ) => {
    
     try {
-        const {  email, password } = req.body;
-        const userFound = await db.user.findOne({ where: { email: email } });
-        if( !userFound ) return res.status( 400 ).json({ message: 'El correo no existe '});
+        const {  login, password } = req.body;
+        const userFound = await db.user.findOne({ where: { login: login } });
+        if( !userFound ) return res.status( 400 ).json({ message: 'El usuario no existe '});
         if( !userFound.dataValues.status ) return res.status( 400 ).json({ message: 'Usuario o contraseña incorrecto '});
         const validPassword = bcrypt.compareSync( password, userFound.dataValues.password );
         if( !validPassword ) return res.status( 400 ).json({ message: 'Usuario o contraseña incorrecto '});

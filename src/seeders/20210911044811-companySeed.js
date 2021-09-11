@@ -11,54 +11,55 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     await queryInterface.bulkInsert('companies', [{
-      name: 'ciamsa',
-      status: 'true'
-    },
-    {
-      name: 'piki7',
-      status: 'true'
-    },
-    {
-      name: 'sident',
-      status: 'true'
-    },
-    {
-      name: 'piki7',
-      status: 'true'
-    },
-    {
-      name: 'zoloch',
-      status: 'true'
-    },
-    {
-      name: 'Cia. Transportadora',
-      status: 'true'
-    },
-    {
-      name: 'C.I. Carbones Suramericanos S.A.',
-      status: 'true'
-    },
-    {
-      name: 'Carbones Andinos S A S',
-      status: 'true'
-    },
-    {
-      name: 'Gerleinco',
-      status: 'true'
-    },
-    {
-      name: 'C.I. Bulk Trading Sur America LTDA',
-      status: 'true'
-    },
-    {
-      name: 'trenaco',
-      status: 'true'
-    },
-    {
-      name: 'Coquecol S.A. C.I',
-      status: 'true'
-    }
+    await queryInterface.bulkInsert('companies', [
+      {
+        name: 'ciamsa',
+        status: 1
+      },
+      {
+        name: 'piki7',
+        status: 1
+      },
+      {
+        name: 'sident',
+        status: 1
+      },
+      {
+        name: 'piki7',
+        status: 1
+      },
+      {
+        name: 'zoloch',
+        status: 1
+      },
+      {
+        name: 'Cia. Transportadora',
+        status: 1
+      },
+      {
+        name: 'C.I. Carbones Suramericanos S.A.',
+        status: 1
+      },
+      {
+        name: 'Carbones Andinos S A S',
+        status: 1
+      },
+      {
+        name: 'Gerleinco',
+        status: 1
+      },
+      {
+        name: 'C.I. Bulk Trading Sur America LTDA',
+        status: 1
+      },
+      {
+        name: 'trenaco',
+        status: 1
+      },
+      {
+        name: 'Coquecol S.A. C.I',
+        status: 1
+      }
 ])
   },
 

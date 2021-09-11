@@ -43,20 +43,7 @@ userCtrl.newUser = async ( req, res ) => {
     }
 } 
 
-userCtrl.updateUser = async ( req, res ) => {
-    const { id } = req.params;
-    const { nombre, telefono, tipo } = req.body;
-    try {
-        const foundUser = await db.user.findByPk( id );
-        if( !foundUser ) return res.status( 400 ).json( { message: `El usuario no existe` });
-       await foundUser.update( req.body ).then(() => {
-        return res.status( 200 ).json({ foundUser });
-       });
-        
-    }catch (error) {
-        return  res.send({message: error.message});
-    }
-}  
+ 
 
 userCtrl.updateUser = async ( req, res ) => {
     try {
