@@ -53,7 +53,7 @@ clientCtrl.update = async (req, res) => {
             id: req.params.id,
         }});
         client.name = req.body.name.toLowerCase();
-        client.nit = req.body.nit;
+        client.nit = req.body.documentId;
         client.phone = req.body.phone;
         client.email = req.body.email;
         client.save();
