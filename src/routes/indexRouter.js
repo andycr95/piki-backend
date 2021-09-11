@@ -14,6 +14,7 @@ router.use("/contenedores", require('./containerRouter'));
 router.use("/turnos", require('./shiftRouter'));
 router.use("/empresas", require('./companyRoutes'));
 router.use("/asignar_contenedores", require('./asignContainerRouter'));
+router.use("/management", require('./managementRouter'));
 
 
 module.exports = router;
