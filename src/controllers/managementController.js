@@ -28,6 +28,11 @@ managementCtrl.getInfo = async (req, res) => {
                                                     {
                                                         model: db.shiftClass,
                                                         where: { id: Sequelize.col('shiftClassId') }
+                                                    },
+                                                    {
+                                                        model: db.container, as: 'containers', include:{
+                                                            model: db.containerType, as: 'containerType' 
+                                                        } 
                                                     }
                                                 ]
                                             });
