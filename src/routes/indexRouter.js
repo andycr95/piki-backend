@@ -4,7 +4,6 @@ const router = Router();
 
 router.use("/login", require('./authRouter'));
 router.use('/usuarios',require('./userRouter'));
-router.use('/conductores',require('./driverRouter'));
 router.use("/conductores", require('./driverRouter'));
 router.use("/lineas", require('./lineRouter'));
 router.use("/tipos", require('./typeRouter'));

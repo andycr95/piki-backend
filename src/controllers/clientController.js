@@ -5,6 +5,9 @@ const clientCtrl = {};
 
 clientCtrl.get = async (req, res ) => {
     const clients = await db.client.findAll({
+        where: {
+            status: 'true'
+        },
         order: [
             ['name', 'ASC']
         ]
@@ -28,7 +31,7 @@ clientCtrl.searchclient = async (req, res ) => {
 
 clientCtrl.post = async ( req, res ) => {
     const { name,phone,email,documentId } = req.body;
-    const ClientCreate = await db.lient.create({ 
+    const ClientCreate = await db.client.create({ 
         nit:documentId,
         name, 
         phone, 
@@ -37,9 +40,47 @@ clientCtrl.post = async ( req, res ) => {
     });
 
     res.json({
-        msg: 'post API - clientsPost',
+        msg: 'Cliente creado',
         ClientCreate
     });
+}
+
+
+clientCtrl.update = async (req, res) => {
+    try {
+        const client = await db.client.findOne({
+        where: {
+            id: req.params.id,
+        }});
+        client.name = req.body.name.toLowerCase();
+        client.nit = req.body.documentId;
+        client.phone = req.body.phone;
+        client.email = req.body.email;
+        client.save();
+        res.status(200).json({
+            client,
+            message: 'Cliente actualizado'
+        });
+    } catch (error) {
+        res.status(500).json({ error: error});
+    }
+}
+
+clientCtrl.delete = async (req, res) => {
+    try {
+        const client = await db.client.findOne({
+        where: {
+            id: req.params.id,
+        }});
+        client.status = 'false';
+        client.save();
+        res.status(200).json({
+            client,
+            message: 'Cliente eliminado'
+        });
+    } catch (error) {
+        res.status(500).json({ error: error});
+    }
 }
 
 clientCtrl.getAllReport = async (req, res) => {
