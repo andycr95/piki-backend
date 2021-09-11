@@ -2,8 +2,10 @@ const { Router } = require('express');
 const router = Router();
 const yardController = require('../controllers/yardController');
 
-router.post('/', yardController.post);
+router.get('/getAllReport', yardController.getAllReport);
 router.get('/', yardController.get);
-router.get('/getAllReport', yardController.getAllReport)
+router.post('/', yardController.create);
+router.put('/:id', yardController.update);
+router.delete('/:id', yardController.delete);
 
 module.exports = router;
