@@ -11,6 +11,24 @@ shiftCtrl.get = async (req, res ) => {
     res.json(shifts);
 }
 
+shiftCtrl.getWithType = async (req, res ) => {
+    const shifts = await db.shift.findAll({
+        where: {
+            shiftClassId: req.params.type
+        },
+        include: [
+            {model: db.client, as: 'client' }, 
+            {model: db.shiftClass, as: 'shiftClass' },
+            {model: db.containerYard, as: 'containerYard' },
+            {model: db.container, as: 'containers', include:{
+                model: db.containerType, as: 'containerType' 
+            } },
+           { model: db.driver, as: 'driver'}
+        ]
+    });
+    res.json(shifts);
+}
+
 shiftCtrl.getShift = async (req, res ) => {
     const shift = await db.shift.findOne({
         where: {
