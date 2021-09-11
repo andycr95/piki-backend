@@ -9,7 +9,6 @@ const validateJWT = async ( req, res, next ) => {
         const user = await db.user.findByPk( uid );
         if( !user ) res.status( 401 ).json({ message: 'Token no valido'});
         if( !user.status ) res.status( 401 ).json({ message: 'Token no valido'});
-       
         req.user = user;
         next();
     } catch (error) {
