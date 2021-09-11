@@ -1,17 +1,20 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('asignContainerShifts', {
+    await queryInterface.createTable('containers', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      containerId: {
+      code: {
+       type: Sequelize.STRING
+      },
+      containerTypeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'containers',
+          model: 'containerTypes',
           key: 'id'
         },
         onUpdate: 'NO ACTION',
@@ -41,6 +44,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('asignContainerShifts');
+    await queryInterface.dropTable('containers');
   }
 };

@@ -39,4 +39,18 @@ typeCtrl.post = async ( req, res ) => {
     });
 }
 
+typeCtrl.getAllReport = async (req, res) => {
+    try {
+        const tiposTamanios = await db.containerType.findAll({
+            attributes: [['id', 'item_id'], ['description', 'item_text']],
+            order: [
+                ['description', 'ASC']
+            ]
+        })
+        res.status(200).json(tiposTamanios)
+    } catch (error) {
+        res.json({ error: error})
+    }
+}
+
 module.exports = typeCtrl;

@@ -12,7 +12,7 @@ const { Sequelize } = require('sequelize');
 const dbConnetionNew = new Sequelize(`${process.env.DATABASE_NEW}`, `${process.env.ROOT_NEW}`, `${process.env.PASS_NEW}`, {
     host: '192.241.155.75',
     dialect: 'mysql',
-   
+    logging: false,
 });
 
 

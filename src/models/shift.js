@@ -14,8 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       Shift.belongsTo(models.client);
       Shift.belongsTo(models.driver);
       Shift.belongsTo(models.transLine);
+      Shift.belongsTo(models.user);
       Shift.belongsTo(models.shiftClass);
-      Shift.belongsTo(models.containerYard);  
+      Shift.belongsTo(models.containerYard);
+      Shift.hasMany(models.container); 
     }
   };
   Shift.init({
