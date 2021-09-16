@@ -14,8 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   role.init({
-    name: DataTypes.STRING,
-    status: DataTypes.BOOLEAN
+    name: {
+      type: DataTypes.STRING
+   },
+   status: {
+     type: DataTypes.STRING,
+     defaultValue: true
+   }
   }, {
     sequelize,
     modelName: 'role',
