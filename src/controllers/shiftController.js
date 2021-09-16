@@ -12,6 +12,14 @@ shiftCtrl.get = async (req, res ) => {
     res.json(shifts);
 }
 
+shiftCtrl.getMoney = async (req, res ) => {
+    const lastMoneyBox = await db.moneyBox.findAll({
+        limit: 1,
+        order: [ [ 'createdAt', 'DESC' ]]
+    });
+    res.json(lastMoneyBox);
+}
+
 shiftCtrl.getWithType = async (req, res ) => {
     const shifts = await db.shift.findAll({
         where: {
@@ -78,7 +86,6 @@ shiftCtrl.post = async ( req, res ) => {
         obvs: observations,
         status: 'true'
     });
-
     await createContainer(containers, ShiftCreate.id);
     const shift = await db.shift.findOne({
         where: {
@@ -96,11 +103,31 @@ shiftCtrl.post = async ( req, res ) => {
            { model: db.driver, as: 'driver'}
         ]
     });
+    moneyBoxes(shift);
 
     res.json({
-        msg: 'post API - lastShift',
+        message: 'Turno registrado',
         shift
     });
+}
+
+shiftCtrl.update = async (req, res) => {
+    try {
+        const shift = await db.shift.findOne({
+        where: {
+            id: req.params.id,
+        }});
+        shift.limitDate = req.body.date;
+        shift.save();
+        moneyBoxes(shift);
+
+        res.status(200).json({
+            shift,
+            message: 'Reenturne registrado'
+        });
+    } catch (error) {
+        res.status(500).json({ error: error});
+    }
 }
 
 async function compareDate() {
@@ -120,6 +147,41 @@ async function compareDate() {
         compare: date == dateN,
         shiftL
     };
+}
+
+async function moneyBoxes(item){
+    const lastMoneyBox = await db.moneyBox.findAll({
+        limit: 1,
+        order: [ [ 'createdAt', 'DESC' ]]
+    });
+    console.log(lastMoneyBox[0].goblalMoney);
+    console.log(item.price);
+    if (lastMoneyBox.length == 0) {
+        await db.moneyBox.create({
+            goblalMoney: item.price,
+            current: item.price,
+            end: 0
+        })
+    } else{
+        await db.moneyBox.create({
+            goblalMoney: lastMoneyBox[0].goblalMoney + item.price,
+            current: lastMoneyBox[0].current + item.price,
+            end: lastMoneyBox[0].end
+        })
+    }
+}
+
+shiftCtrl.postMoneyBoxes = async (req, res) => {
+    const lastMoneyBox = await db.moneyBox.findAll({
+        limit: 1,
+        order: [ [ 'createdAt', 'DESC' ]]
+    });
+    const money = await db.moneyBox.create({
+        goblalMoney: lastMoneyBox[0].goblalMoney,
+        current: 0,
+        end: lastMoneyBox[0].end
+    })
+    res.status(200).json(money);
 }
 
 
