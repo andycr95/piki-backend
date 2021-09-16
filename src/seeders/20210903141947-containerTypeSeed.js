@@ -12,7 +12,8 @@ module.exports = {
      * }], {});
     */
 
-    await queryInterface.bulkInsert('containerTypes', [{
+    await queryInterface.bulkInsert('containerTypes', [
+    {
       code: 'Dry20',
       description: 'Dry - 20 Pies',
       status: 'true'

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.belongsTo(models.company);
+      User.belongsTo(models.role);
     }
   };
   User.init({
@@ -39,6 +40,15 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'NO ACTION',
         onDelete: 'NO ACTION',
     },
+    roleId: {
+      type: DataTypes.INTEGER,
+       references: {
+         model: 'roles',
+         key: 'id'
+       },
+       onUpdate: 'NO ACTION',
+       onDelete: 'NO ACTION',
+   },
     type: {
         type: DataTypes.INTEGER
     },

@@ -13,6 +13,7 @@ module.exports = {
       "identification":"8889999288",
       "email":"adminpiki@gmail.com",
       "companyId":1,
+      "roleId":1,
       "type":1
     }], {});
   },
