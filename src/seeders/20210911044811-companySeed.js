@@ -25,10 +25,6 @@ module.exports = {
         status: 1
       },
       {
-        name: 'piki7',
-        status: 1
-      },
-      {
         name: 'zoloch',
         status: 1
       },
