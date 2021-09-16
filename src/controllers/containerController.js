@@ -3,7 +3,7 @@ const containerCtrl = {};
 
 
 containerCtrl.get = async (req, res ) => {
-    const containers = await db.container.find();
+    const containers = await db.container.findAll();
     res.json(containers);
 }
 
