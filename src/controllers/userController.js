@@ -13,7 +13,9 @@ userCtrl.getUser = async ( req, res ) => {
                 {
                     model: db.company,
                     where: { id: Sequelize.col('companyId')}
-                }
+                 
+                },
+                {model: db.role, as: 'role' }
             ]
         });  
         if( !users ) return res.status( 404 ).json({ message: 'No se encontraron usuarios'});
