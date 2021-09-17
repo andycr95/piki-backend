@@ -114,15 +114,48 @@ shiftCtrl.post = async ( req, res ) => {
 shiftCtrl.update = async (req, res) => {
     try {
         const shift = await db.shift.findOne({
-        where: {
-            id: req.params.id,
-        }});
-        shift.limitDate = req.body.date;
-        shift.save();
-        moneyBoxes(shift);
-
+            where: {
+                id: req.params.id,
+            },
+            include: [
+                {model: db.container, as: 'containers'}
+            ]
+        });
+        const compare = await compareDate();
+        const ShiftCreate = await db.shift.create({ 
+            clientId: shift.clientId,
+            driverId: shift.driverId,
+            transLineId: shift.transLineId,
+            userId: shift.userId,
+            createdAt: req.body.date,
+            shiftClassId: req.body.type,
+            containerYardId: shift.containerYardId,
+            price: shift.price,
+            dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
+            globalShift: compare.compare ? compare.shiftL.globalShift+1 : 1,
+            obvs: req.body.observations,
+            status: 'true'
+        });
+        await createContainerRe(shift.containers, ShiftCreate.id);
+        const shiftUpdated = await db.shift.findOne({
+            where: {
+                id: ShiftCreate.id,
+            },
+            include: [
+                {model: db.client, as: 'client' }, 
+                {model: db.transLine, as: 'transLine' },
+                {model: db.user, as: 'user' },
+                {model: db.shiftClass, as: 'shiftClass' },
+                {model: db.containerYard, as: 'containerYard' },
+                {model: db.container, as: 'containers', include:{
+                    model: db.containerType, as: 'containerType' 
+                }},
+            { model: db.driver, as: 'driver'}
+            ]
+        });
+        moneyBoxes(shiftUpdated);
         res.status(200).json({
-            shift,
+            shiftUpdated,
             message: 'Reenturne registrado'
         });
     } catch (error) {
@@ -135,7 +168,6 @@ async function compareDate() {
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
-
 
     if (lastShift.length === 0) return false;
     let shiftL = lastShift[0];
@@ -154,8 +186,6 @@ async function moneyBoxes(item){
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
-    console.log(lastMoneyBox[0].goblalMoney);
-    console.log(item.price);
     if (lastMoneyBox.length == 0) {
         await db.moneyBox.create({
             goblalMoney: item.price,
@@ -184,7 +214,6 @@ shiftCtrl.postMoneyBoxes = async (req, res) => {
     res.status(200).json(money);
 }
 
-
 async function createContainer(containers, id) {
     for (let i = 0; i < containers.length; i++) {
         const c = containers[i];
@@ -197,6 +226,18 @@ async function createContainer(containers, id) {
         await db.container.create({ 
             code:c.container,
             containerTypeId:type.id, 
+            shiftId:id,
+            status: 'true'
+        });        
+    }
+}
+
+async function createContainerRe(containers, id) {
+    for (let i = 0; i < containers.length; i++) {
+        const c = containers[i];
+        await db.container.create({ 
+            code:c.code,
+            containerTypeId:c.containerTypeId, 
             shiftId:id,
             status: 'true'
         });        
