@@ -8,8 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      limitDate: {
-       type: Sequelize.DATEONLY
+      date: {
+       type: Sequelize.DATE
       },
       clientId: {
         type: Sequelize.INTEGER,

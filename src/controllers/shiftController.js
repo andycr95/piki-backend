@@ -73,7 +73,7 @@ shiftCtrl.post = async ( req, res ) => {
     });
     const compare = await compareDate();
     const ShiftCreate = await db.shift.create({ 
-        limitDate: dateLimit,
+        date: dateLimit,
         clientId: parseInt(clientId),
         driverId: driver.id,
         transLineId: parseInt(transportLine),

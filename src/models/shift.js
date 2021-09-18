@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Shift.init({
-      limitDate: {
-         type: DataTypes.DATEONLY
+      date: {
+         type: DataTypes.DATE
       },
       clientId: {
          type: DataTypes.INTEGER,

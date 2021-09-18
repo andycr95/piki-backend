@@ -13,7 +13,7 @@ const CamposMock = {
     "CONTENEDORES": [{ "field": "code", "table": "containers"}],
     "TIPO/TAMAÑO": [{ "field": "description", "table": "containerTypes"}],
     "LINEA": [{ "field": "description", "table": "transLines"}],
-    "DEVOLUCION": [{ "field": "limitDate", "table": "shifts"}],
+    "DEVOLUCION": [{ "field": "date", "table": "shifts"}],
     "PATIO": [{ "field": "description", "table": "containerYards"}],
 }
 
