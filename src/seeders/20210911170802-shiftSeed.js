@@ -13,7 +13,7 @@ module.exports = {
      */
     await queryInterface.bulkInsert("shifts", [
       {
-        limitDate: "2021-03-12",
+        date: "2021-03-12",
         clientId: 1,
         driverId: 338,
         transLineId: 11,

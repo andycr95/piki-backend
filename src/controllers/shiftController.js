@@ -21,7 +21,27 @@ shiftCtrl.getMoney = async (req, res ) => {
 }
 
 shiftCtrl.getWithType = async (req, res ) => {
-    const shifts = await db.shift.findAll({
+    if (req.params.type === '5') {
+        const shifts = await db.shift.findAll({
+            where: {
+                [Op.or]:[
+                    {shiftClassId: req.params.type},
+                    {shiftClassId: 1},
+                ]
+            },
+            include: [
+                {model: db.client, as: 'client' }, 
+                {model: db.shiftClass, as: 'shiftClass' },
+                {model: db.containerYard, as: 'containerYard' },
+                {model: db.container, as: 'containers', include:{
+                    model: db.containerType, as: 'containerType' 
+                } },
+            { model: db.driver, as: 'driver'}
+            ]
+        });
+        res.json(shifts);
+    }
+    /* const shifts = await db.shift.findAll({
         where: {
             shiftClassId: req.params.type
         },
@@ -34,8 +54,7 @@ shiftCtrl.getWithType = async (req, res ) => {
             } },
            { model: db.driver, as: 'driver'}
         ]
-    });
-    res.json(shifts);
+    }); */
 }
 
 shiftCtrl.getShift = async (req, res ) => {
@@ -76,6 +95,7 @@ shiftCtrl.post = async ( req, res ) => {
         date: dateLimit,
         clientId: parseInt(clientId),
         driverId: driver.id,
+        createdAt: dateLimit,
         transLineId: parseInt(transportLine),
         userId: 1,
         shiftClassId: parseInt(type),
@@ -121,18 +141,19 @@ shiftCtrl.update = async (req, res) => {
                 {model: db.container, as: 'containers'}
             ]
         });
-        const compare = await compareDate();
+        const compare = await compareDateRe(req.body.date);
         const ShiftCreate = await db.shift.create({ 
             clientId: shift.clientId,
             driverId: shift.driverId,
             transLineId: shift.transLineId,
             userId: shift.userId,
             createdAt: req.body.date,
+            date: req.body.date,
             shiftClassId: req.body.type,
             containerYardId: shift.containerYardId,
             price: shift.price,
             dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
-            globalShift: compare.compare ? compare.shiftL.globalShift+1 : 1,
+            globalShift: compare.shiftF.globalShift+1,
             obvs: req.body.observations,
             status: 'true'
         });
@@ -159,6 +180,7 @@ shiftCtrl.update = async (req, res) => {
             message: 'Reenturne registrado'
         });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: error});
     }
 }
@@ -178,6 +200,37 @@ async function compareDate() {
     return {
         compare: date == dateN,
         shiftL
+    };
+}
+
+async function compareDateRe(dateShift) {
+    const lastShift = await db.shift.findAll({
+        where: {
+            createdAt : dateShift
+        },
+        limit: 1,
+        order: [ [ 'createdAt', 'DESC' ]]
+    });
+    const shiftF = await db.shift.findAll({
+        limit: 1,
+        order: [ [ 'createdAt', 'DESC' ]]
+    });
+    let shiftL = lastShift[0];
+    let now = new Date();
+    if (lastShift.length === 0) {
+        return {
+            compare: false,
+            shiftL,
+            shiftF: shiftF[0]
+        };
+    } else{
+        let date = moment(now).format("YYYY-MM-DD");
+        let dateN = moment(shiftL.date).format("YYYY-MM-DD");
+        return {
+            compare: date == dateN,
+            shiftL,
+            shiftF
+        };
     };
 }
 
