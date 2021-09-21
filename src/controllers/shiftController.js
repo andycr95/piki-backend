@@ -8,7 +8,11 @@ const shiftCtrl = {};
 
 
 shiftCtrl.get = async (req, res ) => {
-    const shifts = await db.shift.findAll();
+    const shifts = await db.shift.findAll({
+        where: {
+            status: 'true'
+        }
+    });
     res.json(shifts);
 }
 
@@ -27,7 +31,28 @@ shiftCtrl.getWithType = async (req, res ) => {
                 [Op.or]:[
                     {shiftClassId: req.params.type},
                     {shiftClassId: 1},
-                ]
+                ],
+                status: 'true'
+            },
+            include: [
+                {model: db.client, as: 'client' }, 
+                {model: db.shiftClass, as: 'shiftClass' },
+                {model: db.containerYard, as: 'containerYard' },
+                {model: db.container, as: 'containers', include:{
+                    model: db.containerType, as: 'containerType' 
+                } },
+            { model: db.driver, as: 'driver'}
+            ]
+        });
+        res.json(shifts);
+    } else if (req.params.type === '6') {
+        const shifts = await db.shift.findAll({
+            where: {
+                [Op.or]:[
+                    {shiftClassId: req.params.type},
+                    {shiftClassId: 2},
+                ],
+                status: 'true'
             },
             include: [
                 {model: db.client, as: 'client' }, 
@@ -41,26 +66,15 @@ shiftCtrl.getWithType = async (req, res ) => {
         });
         res.json(shifts);
     }
-    /* const shifts = await db.shift.findAll({
-        where: {
-            shiftClassId: req.params.type
-        },
-        include: [
-            {model: db.client, as: 'client' }, 
-            {model: db.shiftClass, as: 'shiftClass' },
-            {model: db.containerYard, as: 'containerYard' },
-            {model: db.container, as: 'containers', include:{
-                model: db.containerType, as: 'containerType' 
-            } },
-           { model: db.driver, as: 'driver'}
-        ]
-    }); */
 }
 
 shiftCtrl.getShift = async (req, res ) => {
     const shift = await db.shift.findOne({
         where: {
-            id: req.params.id,
+            [Op.and]:[
+                {id: req.params.id},
+                {status: 'true'}
+            ]
         },
         include: [
             {model: db.client, as: 'client' }, 
@@ -78,8 +92,7 @@ shiftCtrl.getShift = async (req, res ) => {
 }
 
 shiftCtrl.post = async ( req, res ) => {
-    const { document,type,transportLine,clientId,limitTime,patio, containers, observations } = req.body;
-    let dateLimit = new Date(limitTime)
+    const { document,type,transportLine,clientId,limitTime,patio, containers, observations, user } = req.body;
     const classShift = await db.shiftClass.findOne({
         where:{
            id : type
@@ -90,19 +103,20 @@ shiftCtrl.post = async ( req, res ) => {
            identification : document
         }
     });
-    const compare = await compareDate();
+    let dateLimit = moment(limitTime).format();
+    const compare = await compareDate(dateLimit);
     const ShiftCreate = await db.shift.create({ 
         date: dateLimit,
         clientId: parseInt(clientId),
         driverId: driver.id,
         createdAt: dateLimit,
         transLineId: parseInt(transportLine),
-        userId: 1,
+        userId: user,
         shiftClassId: parseInt(type),
         containerYardId: parseInt(patio),
         price: parseInt(classShift.price),
         dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
-        globalShift: compare.compare ? compare.shiftL.globalShift+1 : 1,
+        globalShift: compare.compare2 ? compare.shiftF.globalShift+1 : 1,
         obvs: observations,
         status: 'true'
     });
@@ -141,7 +155,8 @@ shiftCtrl.update = async (req, res) => {
                 {model: db.container, as: 'containers'}
             ]
         });
-        const compare = await compareDateRe(req.body.date);
+        let dateLimit = moment(req.body.date).format();
+        const compare = await compareDate(dateLimit);
         const ShiftCreate = await db.shift.create({ 
             clientId: shift.clientId,
             driverId: shift.driverId,
@@ -153,7 +168,7 @@ shiftCtrl.update = async (req, res) => {
             containerYardId: shift.containerYardId,
             price: shift.price,
             dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
-            globalShift: compare.shiftF.globalShift+1,
+            globalShift: compare.compare2 ? compare.shiftF.globalShift+1 : 1,
             obvs: req.body.observations,
             status: 'true'
         });
@@ -185,51 +200,75 @@ shiftCtrl.update = async (req, res) => {
     }
 }
 
-async function compareDate() {
-    const lastShift = await db.shift.findAll({
-        limit: 1,
-        order: [ [ 'createdAt', 'DESC' ]]
-    });
-
-    if (lastShift.length === 0) return false;
-    let shiftL = lastShift[0];
-    let now = new Date();
-    let date = moment(now).format("YYYY-MM-DD");
-    let dateN = moment(shiftL.createdAt).format("YYYY-MM-DD");
-
-    return {
-        compare: date == dateN,
-        shiftL
-    };
+shiftCtrl.delete = async (req, res) => {
+    try {
+        const shift = await db.shift.findOne({
+            where: {
+                id: req.params.id,
+            }
+        });
+        shift.status = 'false';
+        shift.obvs = req.body.obvs;
+        shift.save();
+        const shiftUpdated = await db.shift.findOne({
+            where: {
+                id: shift.id,
+            },
+            include: [
+                {model: db.client, as: 'client' }, 
+                {model: db.transLine, as: 'transLine' },
+                {model: db.user, as: 'user' },
+                {model: db.shiftClass, as: 'shiftClass' },
+                {model: db.containerYard, as: 'containerYard' },
+                {model: db.container, as: 'containers', include:{
+                    model: db.containerType, as: 'containerType' 
+                }},
+            { model: db.driver, as: 'driver'}
+            ]
+        });
+        moneyBoxesDelete(shift);
+        res.status(200).json({
+            shiftUpdated,
+            message: 'Turno anulado'
+        });
+    } catch (error) {
+        res.status(500).json({ error: error});
+    }
 }
 
-async function compareDateRe(dateShift) {
+async function compareDate(dateShift) {
     const lastShift = await db.shift.findAll({
         where: {
-            createdAt : dateShift
+            [Op.and]:[
+                {createdAt : { 
+                    [Op.lt]: dateShift
+                }},
+                {status: 'true'}
+            ]
         },
         limit: 1,
         order: [ [ 'createdAt', 'DESC' ]]
     });
     const shiftF = await db.shift.findAll({
         limit: 1,
-        order: [ [ 'createdAt', 'DESC' ]]
+        order: [ [ 'globalShift', 'DESC' ]]
     });
     let shiftL = lastShift[0];
-    let now = new Date();
     if (lastShift.length === 0) {
         return {
             compare: false,
+            compare2: shiftF.length === 0 ? false : true,
             shiftL,
             shiftF: shiftF[0]
         };
     } else{
-        let date = moment(now).format("YYYY-MM-DD");
+        let date = moment(dateShift).format("YYYY-MM-DD");
         let dateN = moment(shiftL.date).format("YYYY-MM-DD");
         return {
             compare: date == dateN,
+            compare2: shiftF.length === 0 ? false : true,
             shiftL,
-            shiftF
+            shiftF: shiftF[0]
         };
     };
 }
@@ -254,6 +293,18 @@ async function moneyBoxes(item){
     }
 }
 
+async function moneyBoxesDelete(item){
+    const lastMoneyBox = await db.moneyBox.findAll({
+        limit: 1,
+        order: [ [ 'createdAt', 'DESC' ]]
+    });
+    await db.moneyBox.create({
+        goblalMoney: lastMoneyBox[0].goblalMoney - item.price,
+        current: lastMoneyBox[0].current - item.price,
+        end: lastMoneyBox[0].end
+    })
+}
+
 shiftCtrl.postMoneyBoxes = async (req, res) => {
     const lastMoneyBox = await db.moneyBox.findAll({
         limit: 1,
@@ -262,7 +313,7 @@ shiftCtrl.postMoneyBoxes = async (req, res) => {
     const money = await db.moneyBox.create({
         goblalMoney: lastMoneyBox[0].goblalMoney,
         current: 0,
-        end: lastMoneyBox[0].end
+        end: lastMoneyBox[0].current
     })
     res.status(200).json(money);
 }
