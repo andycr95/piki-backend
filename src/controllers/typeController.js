@@ -62,7 +62,7 @@ typeCtrl.update = async (req, res) => {
         }});
         containerType.description = req.body.description.toLowerCase();
         containerType.code = req.body.code;
-        containerType.save();
+        await containerType.save();
         res.status(200).json({
             containerType,
             message: 'Tipo de contendor actualizado'
@@ -79,7 +79,7 @@ typeCtrl.delete = async (req, res) => {
             id: req.params.id,
         }});
         containerType.status = 'false';
-        containerType.save();
+        await containerType.save();
         res.status(200).json({
             containerType,
             message: 'Tipo de contendor eliminado'

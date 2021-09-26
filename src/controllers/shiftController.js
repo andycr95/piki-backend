@@ -25,46 +25,50 @@ shiftCtrl.getMoney = async (req, res ) => {
 }
 
 shiftCtrl.getWithType = async (req, res ) => {
-    if (req.params.type === '5') {
-        const shifts = await db.shift.findAll({
-            where: {
-                [Op.or]:[
-                    {shiftClassId: req.params.type},
-                    {shiftClassId: 1},
-                ],
-                status: 'true'
-            },
-            include: [
-                {model: db.client, as: 'client' }, 
-                {model: db.shiftClass, as: 'shiftClass' },
-                {model: db.containerYard, as: 'containerYard' },
-                {model: db.container, as: 'containers', include:{
-                    model: db.containerType, as: 'containerType' 
-                } },
-            { model: db.driver, as: 'driver'}
-            ]
-        });
-        res.json(shifts);
-    } else if (req.params.type === '6') {
-        const shifts = await db.shift.findAll({
-            where: {
-                [Op.or]:[
-                    {shiftClassId: req.params.type},
-                    {shiftClassId: 2},
-                ],
-                status: 'true'
-            },
-            include: [
-                {model: db.client, as: 'client' }, 
-                {model: db.shiftClass, as: 'shiftClass' },
-                {model: db.containerYard, as: 'containerYard' },
-                {model: db.container, as: 'containers', include:{
-                    model: db.containerType, as: 'containerType' 
-                } },
-            { model: db.driver, as: 'driver'}
-            ]
-        });
-        res.json(shifts);
+    try {
+        if (req.params.type === '5') {
+            const shifts = await db.shift.findAll({
+                where: {
+                    [Op.or]:[
+                        {shiftClassId: req.params.type},
+                        {shiftClassId: 1},
+                    ],
+                    status: 'true'
+                },
+                include: [
+                    {model: db.client, as: 'client' }, 
+                    {model: db.shiftClass, as: 'shiftClass' },
+                    {model: db.containerYard, as: 'containerYard' },
+                    {model: db.container, as: 'containers', include:{
+                        model: db.containerType, as: 'containerType' 
+                    } },
+                { model: db.driver, as: 'driver'}
+                ]
+            });
+            res.json(shifts);
+        } else if (req.params.type === '6') {
+            const shifts = await db.shift.findAll({
+                where: {
+                    [Op.or]:[
+                        {shiftClassId: req.params.type},
+                        {shiftClassId: 2},
+                    ],
+                    status: 'true'
+                },
+                include: [
+                    {model: db.client, as: 'client' }, 
+                    {model: db.shiftClass, as: 'shiftClass' },
+                    {model: db.containerYard, as: 'containerYard' },
+                    {model: db.container, as: 'containers', include:{
+                        model: db.containerType, as: 'containerType' 
+                    } },
+                { model: db.driver, as: 'driver'}
+                ]
+            });
+            res.json(shifts);
+        }
+    } catch (error) {
+        res.status(500).json({ error: error})
     }
 }
 
@@ -92,57 +96,76 @@ shiftCtrl.getShift = async (req, res ) => {
 }
 
 shiftCtrl.post = async ( req, res ) => {
-    const { document,type,transportLine,clientId,limitTime,patio, containers, observations, user } = req.body;
-    const classShift = await db.shiftClass.findOne({
-        where:{
-           id : type
+    try {
+        const { driver,type,transportLine,clientId,limitTime,patio, containers, observations, user } = req.body;
+        let okDriver = false;
+        let DriverCreate = [];
+        const classShift = await db.shiftClass.findOne({
+            where:{
+               id : type
+            }
+        });
+        const getDriver = await db.driver.findOne({
+            where:{
+               identification : driver.documentId
+            }
+        });
+        if (!getDriver) {
+            DriverCreate = await db.driver.create({ 
+                identification:driver.documentId,
+                name:driver.name, 
+                email: driver.email,
+                phone: driver.phone, 
+                vehicle_plate: driver.placa_vehicle, 
+                type: driver.type,
+                status: 'true'
+            });
+            okDriver = true
         }
-    });
-    const driver = await db.driver.findOne({
-        where:{
-           identification : document
-        }
-    });
-    let dateLimit = moment(limitTime).format();
-    const compare = await compareDate(dateLimit);
-    const ShiftCreate = await db.shift.create({ 
-        date: dateLimit,
-        clientId: parseInt(clientId),
-        driverId: driver.id,
-        createdAt: dateLimit,
-        transLineId: parseInt(transportLine),
-        userId: user,
-        shiftClassId: parseInt(type),
-        containerYardId: parseInt(patio),
-        price: parseInt(classShift.price),
-        dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
-        globalShift: compare.compare2 ? compare.shiftF.globalShift+1 : 1,
-        obvs: observations,
-        status: 'true'
-    });
-    await createContainer(containers, ShiftCreate.id);
-    const shift = await db.shift.findOne({
-        where: {
-            id: ShiftCreate.id,
-        },
-        include: [
-            {model: db.client, as: 'client' }, 
-            {model: db.transLine, as: 'transLine' },
-            {model: db.user, as: 'user' },
-            {model: db.shiftClass, as: 'shiftClass' },
-            {model: db.containerYard, as: 'containerYard' },
-            {model: db.container, as: 'containers', include:{
-                model: db.containerType, as: 'containerType' 
-            } },
-           { model: db.driver, as: 'driver'}
-        ]
-    });
-    moneyBoxes(shift);
-
-    res.json({
-        message: 'Turno registrado',
-        shift
-    });
+        let dateLimit = moment(limitTime).format();
+        const compare = await compareDate(dateLimit);
+        const ShiftCreate = await db.shift.create({ 
+            date: dateLimit,
+            clientId: parseInt(clientId),
+            driverId: okDriver ? DriverCreate.id : getDriver.id,
+            createdAt: dateLimit,
+            transLineId: parseInt(transportLine),
+            userId: user,
+            shiftClassId: parseInt(type),
+            containerYardId: parseInt(patio),
+            price: parseInt(classShift.price),
+            dayShift:  compare.compare ? compare.shiftL.dayShift+1 : 1,
+            globalShift: compare.compare2 ? compare.shiftF.globalShift+1 : 1,
+            obvs: observations,
+            status: 'true'
+        });
+        await createContainer(containers, ShiftCreate.id);
+        const shift = await db.shift.findOne({
+            where: {
+                id: ShiftCreate.id,
+            },
+            include: [
+                {model: db.client, as: 'client' }, 
+                {model: db.transLine, as: 'transLine' },
+                {model: db.user, as: 'user' },
+                {model: db.shiftClass, as: 'shiftClass' },
+                {model: db.containerYard, as: 'containerYard' },
+                {model: db.container, as: 'containers', include:{
+                    model: db.containerType, as: 'containerType' 
+                } },
+               { model: db.driver, as: 'driver'}
+            ]
+        });
+        moneyBoxes(shift);
+    
+        res.status(200).json({
+            message: 'Turno registrado',
+            shift
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err });
+    }
 }
 
 shiftCtrl.update = async (req, res) => {
@@ -208,7 +231,7 @@ shiftCtrl.delete = async (req, res) => {
             }
         });
         shift.status = 'false';
-        shift.obvs = req.body.obvs;
+        shift.obvs = req.query.obvs;
         shift.save();
         const shiftUpdated = await db.shift.findOne({
             where: {

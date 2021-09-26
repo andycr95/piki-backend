@@ -43,7 +43,7 @@ yardCtrl.update = async (req, res) => {
         }});
         containerYard.description = req.body.description.toLowerCase();
         containerYard.code = req.body.code;
-        containerYard.save();
+        await containerYard.save();
         res.status(200).json({
             containerYard,
             message: 'Patio de contendores actualizado'
@@ -60,7 +60,7 @@ yardCtrl.delete = async (req, res) => {
             id: req.params.id,
         }});
         containerYard.status = 'false';
-        containerYard.save();
+        await containerYard.save();
         res.status(200).json({
             containerYard,
             message: 'Patio de contendores eliminado'

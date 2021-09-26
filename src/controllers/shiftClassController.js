@@ -58,7 +58,7 @@ shiftClassCtrl.update = async (req, res) => {
         }});
         shiftClass.name = req.body.name.toLowerCase();
         shiftClass.price = req.body.price;
-        shiftClass.save();
+        await shiftClass.save();
         res.status(200).json({
             shiftClass,
             message: 'Clase actualizada'

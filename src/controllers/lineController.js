@@ -47,7 +47,7 @@ lineCtrl.update = async (req, res) => {
         }});
         transLine.description = req.body.description.toLowerCase();
         transLine.code = req.body.code;
-        transLine.save();
+        await transLine.save();
         res.status(200).json({
             transLine,
             message: 'Linea de transportadora actualizada'
@@ -64,7 +64,7 @@ lineCtrl.delete = async (req, res) => {
             id: req.params.id,
         }});
         transLine.status = 'false';
-        transLine.save();
+        await transLine.save();
         res.status(200).json({
             transLine,
             message: 'Linea de transportadora eliminada'

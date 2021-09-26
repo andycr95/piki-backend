@@ -19,12 +19,17 @@ driverCtrl.get = async (req, res ) => {
 }
 
 driverCtrl.search = async (req, res ) => {
+    console.log(req.query);
     const drivers = await db.driver.findAll({
         where: {
-            identification: {
-                [Op.like]: `%${req.query.documentId}%`
+            [Op.and]: [
+                {identification: {
+                    [Op.like]: `%${req.query.documentId}%`
+                }},
+                {type: req.query.type}
+            ]
         }
-    }});
+    });
     res.json(drivers);
 }
 
