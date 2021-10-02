@@ -19,6 +19,19 @@ pipelines:
           - echo "Deploying to production environment"
           - pipe: atlassian/ssh-run:0.2.2
             variables:
-              SSH_USER: 'your-server-username'
-              SERVER: 'your-server-ip-address'
+              SSH_USER: 'fastuser'
+              SERVER: '192.241.155.75'
               COMMAND: './your-deployment-script.sh'
+  branches:
+    deploy-master:
+    - step:
+      name: deploy
+      deployment: test
+      script:
+        - echo "Deploying master to live"
+        - pipe: atlassian/ssh-run:0.1.4
+          variables:
+            SSH_USER: 'fastuser'
+            SERVER: '192.241.155.75'
+            COMMAND: 'ci-scripts/pull-deploy-master.sh'
+            MODE: 'script'
