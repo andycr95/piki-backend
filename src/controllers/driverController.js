@@ -7,6 +7,9 @@ const driverCtrl = {};
 
 driverCtrl.get = async (req, res ) => {
     const drivers = await db.driver.findAll({
+        where: {
+            status: 'true'
+        },
         order: [
             ['name', 'ASC']
         ]
@@ -34,21 +37,55 @@ driverCtrl.search = async (req, res ) => {
 }
 
 driverCtrl.post = async ( req, res ) => {
-    const { name,phone,type,placa_vehicle,email,documentId } = req.body;
+    const { name,phone,type,vehicle_plate,email,identification } = req.body;
     const DriverCreate = await db.driver.create({ 
-        identification:documentId,
-        name:name, 
+        identification,
+        name, 
         email,
         phone, 
-        vehicle_plate:placa_vehicle, 
+        vehicle_plate, 
         type,
         status: 'true'
     });
 
     res.json({
-        msg: 'post API - driversPost',
+        message: 'post API - driversPost',
         DriverCreate
     });
 }
 
-module.exports = driverCtrl;
+driverCtrl.update = async ( req, res ) => {
+    const { name,phone,type,placa_vehicle,email,documentId } = req.body;
+    const driver = await db.driver.findOne({ 
+        where: {
+            id: req.params.id,
+        },
+    });
+    driver.identification = documentId;
+    driver.name = name;
+    driver.email = email;
+    driver.phone = phone; 
+    driver.vehicle_plate = placa_vehicle; 
+    driver.type = type;
+    await driver.save();
+    res.json({
+        message: 'Conductor actualizado',
+        driver
+    });
+}
+
+driverCtrl.delete = async ( req, res ) => {
+    const driver = await db.driver.findOne({ 
+        where: {
+            id: req.params.id,
+        },
+    });
+    driver.status = 'false';
+    await driver.save();
+    res.json({
+        message: 'Conductor eliminado',
+        driver
+    });
+}
+
+module.exports = driverCtrl; 

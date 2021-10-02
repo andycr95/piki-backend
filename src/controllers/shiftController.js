@@ -97,7 +97,7 @@ shiftCtrl.getShift = async (req, res ) => {
 
 shiftCtrl.post = async ( req, res ) => {
     try {
-        const { driver,type,transportLine,clientId,limitTime,patio, containers, observations, user } = req.body;
+        const { driver,type,transportLine,clientId,limitTime,patio, containers, observations, user, placa } = req.body;
         let okDriver = false;
         let DriverCreate = [];
         const classShift = await db.shiftClass.findOne({
@@ -157,7 +157,6 @@ shiftCtrl.post = async ( req, res ) => {
             ]
         });
         moneyBoxes(shift);
-    
         res.status(200).json({
             message: 'Turno registrado',
             shift
