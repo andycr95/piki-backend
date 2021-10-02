@@ -7,7 +7,7 @@ class Server {
 
     constructor() {
         this.app  = express();
-        this.port = process.env.PORT;
+        this.port = 3000;
         this.indexPath = '/api';
 
         // Connect to database
