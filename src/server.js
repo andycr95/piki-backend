@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+var morgan = require('morgan')
 const { dbConnetion, dbConnectionDev } = require('./database/db');
 
 
@@ -28,11 +29,9 @@ class Server {
         } catch (error) {
             throw new Error( error );
         }
-     
     } 
 
     middlewares() {
-
         // CORS
         this.app.use( cors() );
 
@@ -41,6 +40,9 @@ class Server {
 
         // Public Directory
         this.app.use( express.static('public') );
+
+        //morgan
+        this.app.use(morgan('dev'))
 
     }
 

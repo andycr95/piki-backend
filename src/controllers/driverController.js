@@ -22,14 +22,14 @@ driverCtrl.get = async (req, res ) => {
 }
 
 driverCtrl.search = async (req, res ) => {
-    console.log(req.query);
+    let type = req.query.type == 1 || req.query.type == 3 || req.query.type == 4 ? 1 : 2;
     const drivers = await db.driver.findAll({
         where: {
             [Op.and]: [
                 {identification: {
                     [Op.like]: `%${req.query.documentId}%`
                 }},
-                {type: req.query.type}
+                {type: type}
             ]
         }
     });

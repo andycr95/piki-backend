@@ -28,6 +28,7 @@ shiftCtrl.getWithType = async (req, res ) => {
     try {
         if (req.params.type === '5') {
             const shifts = await db.shift.findAll({
+                order: [ [ 'createdAt', 'DESC' ]],
                 where: {
                     [Op.or]:[
                         {shiftClassId: req.params.type},
@@ -42,12 +43,13 @@ shiftCtrl.getWithType = async (req, res ) => {
                     {model: db.container, as: 'containers', include:{
                         model: db.containerType, as: 'containerType' 
                     } },
-                { model: db.driver, as: 'driver'}
+                    { model: db.driver, as: 'driver'}
                 ]
             });
             res.json(shifts);
         } else if (req.params.type === '6') {
             const shifts = await db.shift.findAll({
+                order: [ [ 'createdAt', 'DESC' ]],
                 where: {
                     [Op.or]:[
                         {shiftClassId: req.params.type},
@@ -62,7 +64,7 @@ shiftCtrl.getWithType = async (req, res ) => {
                     {model: db.container, as: 'containers', include:{
                         model: db.containerType, as: 'containerType' 
                     } },
-                { model: db.driver, as: 'driver'}
+                    { model: db.driver, as: 'driver'}
                 ]
             });
             res.json(shifts);
@@ -74,6 +76,7 @@ shiftCtrl.getWithType = async (req, res ) => {
 
 shiftCtrl.getShift = async (req, res ) => {
     const shift = await db.shift.findOne({
+        order: [ [ 'createdAt', 'ASC' ]],
         where: {
             [Op.and]:[
                 {id: req.params.id},
@@ -342,8 +345,9 @@ shiftCtrl.postMoneyBoxes = async (req, res) => {
 
 async function createContainer(containers, id) {
     for (let i = 0; i < containers.length; i++) {
-        const c = containers[i];
-        const type = await db.containerType.findOne({
+        let c = containers[i];
+        console.log(c);
+        let type = await db.containerType.findOne({
             where: {
                 code: c.typeCode,
                 status: 'true'

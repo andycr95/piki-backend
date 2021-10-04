@@ -14,7 +14,9 @@ clientCtrl.get = async (req, res ) => {
     });
     for (let i = 0; i < clients.length; i++) {
         const c = clients[i];
-        c.name = c.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+        if (c.name != null) {
+            c.name = c.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+        }
     }
     res.json(clients);
 }
