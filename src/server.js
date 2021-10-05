@@ -7,12 +7,12 @@ const { dbConnetion, dbConnectionDev } = require('./database/db');
 class Server {
 
     constructor() {
-        const secureServer = http.createServer({
+        this.app  = express();
+        this.port = 3000;
+        this.secureServer = http.createServer({
             key: fs.readFileSync('./server.key'),
             cert: fs.readFileSync('./server.cert')
-        }, express());
-        this.app  = secureServer;
-        this.port = 3000;
+        }, this.app);
         this.indexPath = '/api';
 
         // Connect to database
@@ -56,7 +56,7 @@ class Server {
     }
 
     listen() {
-        this.app.listen( this.port, () => {
+        this.secureServer.listen( this.port, () => {
             console.log('Server running on port', this.port );
         });
     }
