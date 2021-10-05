@@ -1,13 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 var morgan = require('morgan')
+const http = require('https');
 const { dbConnetion, dbConnectionDev } = require('./database/db');
-
 
 class Server {
 
     constructor() {
-        this.app  = express();
+        const secureServer = http.createServer({
+            key: fs.readFileSync('./server.key'),
+            cert: fs.readFileSync('./server.cert')
+        }, express());
+        this.app  = secureServer;
         this.port = 3000;
         this.indexPath = '/api';
 
