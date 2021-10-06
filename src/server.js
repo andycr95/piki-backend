@@ -9,10 +9,6 @@ class Server {
     constructor() {
         this.app  = express();
         this.port = 3000;
-        this.secureServer = http.createServer({
-            key: fs.readFileSync('./server.key'),
-            cert: fs.readFileSync('./server.cert')
-        }, this.app);
         this.indexPath = '/api';
 
         // Connect to database
@@ -56,7 +52,7 @@ class Server {
     }
 
     listen() {
-        this.secureServer.listen( this.port, () => {
+        this.app.listen( this.port, () => {
             console.log('Server running on port', this.port );
         });
     }
