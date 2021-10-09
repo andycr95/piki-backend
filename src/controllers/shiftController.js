@@ -386,6 +386,10 @@ shiftCtrl.getFilter = async ( req, res ) => {
         attributes['containers'] = ['id']
         let filter = {}
 
+        if (!filter['shifts']) filter['shifts'] = {};
+
+        filter['shifts']['status'] = "true"
+
         for (const campo of campos) {
             const datos = CamposMock[campo];
             if (datos) {
@@ -405,7 +409,6 @@ shiftCtrl.getFilter = async ( req, res ) => {
         }
 
         if (fechaIni) {
-            if (!filter['shifts']) filter['shifts'] = {};
             filter['shifts']['createdAt'] = {
                 [Op.gte]: moment(fechaIni).format('YYYY-MM-DD HH:mm:ss'),
                 [Op.lte]: moment( (fechaFin) ? fechaFin : fechaIni).add(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
