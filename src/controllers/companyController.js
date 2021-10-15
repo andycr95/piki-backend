@@ -14,7 +14,6 @@ companyCtrl.newCompany = async ( req, res ) => {
     try {
         let newCompany  = req.body; 
         const foundCompany = await db.company.findOne({ where:{ name: newCompany.name } });
-        console.log(foundCompany);
         if(foundCompany) return res.status( 404 ).json({ menssage: 'La empresa ya existe.'});
         newCompany.name = newCompany.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
         db.company.create( newCompany );
