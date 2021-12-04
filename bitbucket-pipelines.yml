@@ -1,0 +1,37 @@
+# Check our guides at https://confluence.atlassian.com/x/14UWN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: node:10.15.3
+pipelines:
+  default:
+    - step:
+        caches:
+          - node
+        script: # Modify the commands below to build your repository.
+          - npm install 
+          - npm test
+    - step:
+        name: Deploy to production
+        deployment: production
+        # trigger: manual  # Uncomment to make this a manual deployment.
+        script:
+          - echo "Deploying to production environment"
+          - pipe: atlassian/ssh-run:0.2.2
+            variables:
+              SSH_USER: 'fastuser'
+              SERVER: '192.241.155.75'
+              COMMAND: './your-deployment-script.sh'
+  branches:
+    deploy-master:
+    - step:
+      name: deploy
+      deployment: test
+      script:
+        - echo "Deploying master to live"
+        - pipe: atlassian/ssh-run:0.1.4
+          variables:
+            SSH_USER: 'fastuser'
+            SERVER: '192.241.155.75'
+            COMMAND: 'ci-scripts/pull-deploy-master.sh'
+            MODE: 'script'

@@ -77,6 +77,7 @@ shiftCtrl.getWithType = async (req, res ) => {
 
 shiftCtrl.getShift = async (req, res ) => {
     const shift = await db.shift.findOne({
+        order: [ [ 'createdAt', 'ASC' ]],
         where: {
             [Op.and]:[
                 {id: req.params.id},
@@ -573,6 +574,10 @@ shiftCtrl.getFilter = async ( req, res ) => {
         attributes['shifts'] = ['createdAt', 'price'];
         attributes['containers'] = ['id']
         let filter = {}
+
+        if (!filter['shifts']) filter['shifts'] = {};
+
+        filter['shifts']['status'] = "true"
 
         for (const campo of campos) {
             const datos = CamposMock[campo];
