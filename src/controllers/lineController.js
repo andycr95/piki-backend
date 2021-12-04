@@ -13,7 +13,9 @@ lineCtrl.get = async (req, res) => {
         })
         for (let i = 0; i < transLines.length; i++) {
             const sc = transLines[i];
-            sc.description = sc.description.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            if (sc.description != null) {
+                sc.description = sc.description.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            }
         }
         res.status(200).json(transLines);
     } catch (error) {

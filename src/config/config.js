@@ -1,24 +1,24 @@
 module.exports = {
   "development": {
-    "username": "piki7",
-    "password": "piki72020",
-    "database": "piki7_development",
-    "host": "192.241.155.75",
+    "username": "root",
+    "password": "",
+    "database": "piki7",
+    "host": "localhost",
     "dialect": "mysql",
     "logging": false
   },
   "test": {
-    "username": "piki7",
-    "password": "piki72020",
-    "database": "piki7_test",
-    "host": "192.241.155.75",
+    "username": "root",
+    "password": "",
+    "database": "piki7",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "production": {
-    "username": "piki7",
-    "password": "piki72020",
-    "database": "piki7_production",
-    "host": "192.241.155.75",
+    "username": "root",
+    "password": "",
+    "database": "piki7",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }

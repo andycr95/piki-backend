@@ -2,18 +2,22 @@ const db = require('../models');
 const typeCtrl = {};
 
 typeCtrl.getWithContainers = async (req, res ) => {
-    const containerTypes = await db.containerType.findAll({
-        order: [
-            ['description', 'ASC']
-        ],
-        include: [
-            {
-                model: db.container,
-                as: 'Instruments'
-            }
-        ]
-    });
-    res.json(containerTypes);
+    try {
+        const containerTypes = await db.containerType.findAll({
+            order: [
+                ['description', 'ASC']
+            ],
+            include: [
+                {
+                    model: db.container,
+                    as: 'Instruments'
+                }
+            ]
+        });
+        res.status(200).json(containerTypes); 
+    } catch (error) {
+        res.status(500).json({ error: error})
+    }
 }
 
 typeCtrl.get = async (req, res) => {
@@ -28,10 +32,13 @@ typeCtrl.get = async (req, res) => {
         })
         for (let i = 0; i < containerTypes.length; i++) {
             const sc = containerTypes[i];
-            sc.description = sc.description.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            if (sc.description != null) {
+                sc.description = sc.description.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            }
         }
         res.status(200).json(containerTypes);
     } catch (error) {
+        console.log(error);
         res.json({ error: error});
     }
 }
@@ -45,7 +52,7 @@ typeCtrl.create = async ( req, res ) => {
             status: 'true'
         });
     
-        res.json({
+        res.status(200).json({
             containerTypeCreate,
             message: 'Tipo de contendor creado'
         });
@@ -99,7 +106,7 @@ typeCtrl.getAllReport = async (req, res) => {
         })
         res.status(200).json(tiposTamanios)
     } catch (error) {
-        res.json({ error: error})
+        res.status(500).json({ error: error})
     }
 }
 

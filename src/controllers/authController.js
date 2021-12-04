@@ -19,6 +19,7 @@ authCtrl.login = async ( req, res ) => {
         return res.status(200).send( {token, user: userFound.dataValues} )
         
     }catch (error) {
+        console.log(error);
         return  res.status( 500 ).send({message: error.message});
     }
 } 

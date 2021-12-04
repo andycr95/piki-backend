@@ -13,11 +13,14 @@ yardCtrl.get = async (req, res) => {
         })
         for (let i = 0; i < containerYardes.length; i++) {
             const sc = containerYardes[i];
-            sc.description = sc.description.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            if (sc.description != null) {
+                sc.description = sc.description.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            }
         }
         res.status(200).json(containerYardes);
     } catch (error) {
-        res.json({ error: error});
+        console.log(error);
+        res.status(500).json({ error: error});
     }
 }
 

@@ -1,4 +1,5 @@
 const companyCtrl = {};
+const { response } = require('express');
 const db = require('../models');
 
 companyCtrl.getCompany = async ( req, res ) => {
@@ -12,7 +13,13 @@ companyCtrl.getCompany = async ( req, res ) => {
 
 companyCtrl.newCompany = async ( req, res ) => {
     try {
-        let newCompany  = req.body; 
+        let newCompany  = req.body;
+        const foundCompany = await db.company.findOne({
+            where: {
+                name: newCompany.name
+            }
+        }); 
+        if (foundCompany) return res.status(404).json({message: 'La eempresa ya existe'})
         newCompany.name = newCompany.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
         db.company.create( newCompany );
         return res.status( 200 ).json({ message: 'Registro exitoso', status: true}); 

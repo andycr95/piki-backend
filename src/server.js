@@ -1,13 +1,14 @@
 const express = require('express');
 const cors = require('cors');
+var morgan = require('morgan')
+const http = require('https');
 const { dbConnetion, dbConnectionDev } = require('./database/db');
-
 
 class Server {
 
     constructor() {
         this.app  = express();
-        this.port = process.env.PORT;
+        this.port = 3000;
         this.indexPath = '/api';
 
         // Connect to database
@@ -28,11 +29,9 @@ class Server {
         } catch (error) {
             throw new Error( error );
         }
-     
     } 
 
     middlewares() {
-
         // CORS
         this.app.use( cors() );
 
@@ -42,10 +41,13 @@ class Server {
         // Public Directory
         this.app.use( express.static('public') );
 
+        //morgan
+        this.app.use(morgan('dev'))
+
     }
 
     routes() {
-        this.app.use( this.indexPath, require('./routes/indexRouter'));
+        this.app.use(require('./routes/indexRouter'));
         
     }
 

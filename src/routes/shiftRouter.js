@@ -10,6 +10,7 @@ router.put('/:id', shiftController.update);
 router.delete('/:id', shiftController.delete);
 router.get('/tipo/:type', shiftController.getWithType);
 router.post('/', shiftController.post);  
+router.post('/export', shiftController.postExport);
 router.post('/getFilter', shiftController.getFilter);
 
 module.exports = router;

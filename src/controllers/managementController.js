@@ -34,7 +34,8 @@ managementCtrl.getInfo = async (req, res) => {
                                                             model: db.containerType, as: 'containerType' 
                                                         } 
                                                     }
-                                                ]
+                                                ],
+                                                order: [ [ 'createdAt', 'DESC' ]]
                                             });
         return res.status(200).json({ info });
     } catch (error) {

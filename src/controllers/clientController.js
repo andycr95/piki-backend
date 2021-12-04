@@ -4,47 +4,62 @@ const db = require('../models');
 const clientCtrl = {};
 
 clientCtrl.get = async (req, res ) => {
-    const clients = await db.client.findAll({
-        where: {
-            status: 'true'
-        },
-        order: [
-            ['name', 'ASC']
-        ]
-    });
-    for (let i = 0; i < clients.length; i++) {
-        const c = clients[i];
-        c.name = c.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+    try {
+        const clients = await db.client.findAll({
+            where: {
+                status: 'true'
+            },
+            order: [
+                ['name', 'ASC']
+            ]
+        });
+        for (let i = 0; i < clients.length; i++) {
+            const c = clients[i];
+            if (c.name != null) {
+                c.name = c.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            }
+        }
+        res.status(200).json(clients);
+    } catch (error) {
+        res.status(500).json({ error: error})
     }
-    res.json(clients);
 }
 
 clientCtrl.searchclient = async (req, res ) => {
-    const clients = await db.client.findAll({
-        where: {
-            nit: {
-                [Op.like]: `%${req.query.documentId}%`
-        }
-    }});
-    res.json(clients);
+    try {
+        const clients = await db.client.findAll({
+            where: {
+                nit: {
+                    [Op.like]: `%${req.query.documentId}%`
+            }
+        }});
+        res.status(200).json(clients);
+
+    } catch (error) {
+        res.status(500).json({ error: error})
+    }
 }
 
 clientCtrl.post = async ( req, res ) => {
-    const { name,phone,email,documentId } = req.body;
-    const ClientCreate = await db.client.create({ 
-        nit:documentId,
-        name, 
-        phone, 
-        email, 
-        status: 'true'
-    });
-
-    res.json({
-        msg: 'Cliente creado',
-        ClientCreate
-    });
+    try {
+        const { name,phone,email,documentId } = req.body;
+        const ClientCreate = await db.client.create({ 
+            nit:documentId,
+            name, 
+            phone, 
+            email, 
+            status: 'true'
+        });
+    
+        res.status(200).json({
+            msg: 'Cliente creado',
+            ClientCreate
+        });
+        
+    } catch (error) {
+        res.status(500).json({ error: error})
+    }
 }
-
 
 clientCtrl.update = async (req, res) => {
     try {
